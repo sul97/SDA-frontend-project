@@ -52,7 +52,8 @@ export function NewProductWrapper() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">Add a new product</h3>
+      <br></br>
+      <h1 className="text-center">Add a new product</h1>
       <ProductForm handleSubmit={handleSubmit} handleChange={handleChange} product={product} />
     </div>
   )

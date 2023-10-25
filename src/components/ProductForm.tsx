@@ -9,11 +9,11 @@ type ProductFormProps = {
 
 export function ProductForm({ product, handleSubmit, handleChange }: ProductFormProps) {
   const inputStyle =
-    'w-full px-3 py-2 text-white border rounded-lg focus:outline-none focus:border-blue-400'
+    'w-50% px-3 py-2 text-black border rounded-lg focus:outline-none focus:border-blue-500'
   const labelStyle = 'block text-sm font-medium text-gray-600'
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded-lg">
+    <form onSubmit={handleSubmit} className="py-10 p-20 bg-gray-100 rounded-lg form-shifted">
       <div className="mb-4">
         <label htmlFor="name" className={labelStyle}>
           Name:
@@ -88,12 +88,12 @@ export function ProductForm({ product, handleSubmit, handleChange }: ProductForm
           id="sizes"
           value={product.sizes.join(',')}
           onChange={handleChange}
-          className="w-full px-3 py-2 text-white border rounded-lg focus:outline-none focus:border-blue-400"
+          className="w-50 px-3 py-2 text-black border rounded-lg focus:outline-none focus:border-blue-400"
         />
       </div>
       <button
         type="submit"
-        className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+        className="w-50 px-4 py-2 text-black bg-gray-300 rounded-lg hover:bg-blue-100">
         Add Product
       </button>
     </form>
