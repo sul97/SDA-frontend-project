@@ -59,8 +59,8 @@ export const productsReducer = createSlice({
         state.items.sort((a, b) => a.price - b.price)
       }
     },
-    addNewProduct: (state, action: { payload: { product: Product } }) => {
-      state.items = [action.payload.product, ...state.items]
+    addNewProduct: (state, action) => {
+      state.items.push(action.payload)
     },
     deleteProduct: (state, action) => {
       const filterProducts = state.items.filter((product) => product.id != action.payload)

@@ -16,6 +16,7 @@ import AdminRoute from './AdminRoute'
 import Register from '../page/Register'
 import Products from '../components/Admin/Products'
 import AddProduct from '../components/Admin/AddProduct'
+import ProductsManager from '../components/ProductsManager'
 
 export const Index = () => {
   return (

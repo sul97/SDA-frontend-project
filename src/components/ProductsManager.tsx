@@ -9,9 +9,8 @@ import {
 import { AppDispatch, RootState } from '../redux/store'
 import { NewProductWrapper } from './NewProductWrapper'
 import api from '../api'
-import AdnimSidebar from './Admin/AdminSidebar'
 
-const ProductsManager = () => {
+export function ProductsManager() {
   const dispatch = useDispatch<AppDispatch>()
   const state = useSelector((state: RootState) => state)
   const products = state.products
@@ -33,30 +32,22 @@ const ProductsManager = () => {
     // At this point we have the data so let's update the store
     dispatch(productsSuccess(res.data))
   }
-  return (
-    <div className="container">
-      <AdnimSidebar />
 
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 w-full">
       <NewProductWrapper />
       {products.isLoading && <h3> Loading products...</h3>}
       <div className="card grid gap-4">
         <ul>
           {products.items.map((product) => (
-            <li key={product.id} className="product">
+            <li key={product.id} className="flex items-center gap-4 text-2xl mb-2">
               <img src={product.image} alt={product.name} width="50" />
               <span>{product.name}</span>
-              <div className="user-actions">
-                <button
-                  className=" text-green-600 text-xs bg-gray-200 edit-button"
-                  onClick={() => dispatch(removeProduct({ productId: product.id }))}>
-                  Edit
-                </button>
-                <button
-                  className=" text-red-400 text-xs bg-gray-200 "
-                  onClick={() => dispatch(removeProduct({ productId: product.id }))}>
-                  Delete
-                </button>
-              </div>
+              <button
+                className=" text-red-400 text-xs"
+                onClick={() => dispatch(removeProduct({ productId: product.id }))}>
+                X
+              </button>
             </li>
           ))}
         </ul>
@@ -64,5 +55,3 @@ const ProductsManager = () => {
     </div>
   )
 }
-
-export default ProductsManager

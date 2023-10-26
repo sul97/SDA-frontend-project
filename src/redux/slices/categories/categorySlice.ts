@@ -33,6 +33,9 @@ export const categoryReducer = createSlice({
     deletetCategory: (state, action) => {
       const filterCategory = state.items.filter((category) => category.id != action.payload)
       state.items = filterCategory
+    },
+    addCategory: (state, action) => {
+      state.items.push(action.payload)
     }
   },
   extraReducers: (builder) => {
@@ -54,5 +57,5 @@ export const categoryReducer = createSlice({
       })
   }
 })
-export const { deletetCategory } = categoryReducer.actions
+export const { addCategory, deletetCategory } = categoryReducer.actions
 export default categoryReducer.reducer

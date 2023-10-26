@@ -6,6 +6,7 @@ import { RootState, AppDispatch } from '../../redux/store'
 
 import AdminSidebar from './AdminSidebar'
 import { Link } from 'react-router-dom'
+import AddProduct from './AddProduct'
 
 const Products = () => {
   const { items, isLoading, error } = useSelector((state: RootState) => state.productsReducer)
@@ -29,10 +30,8 @@ const Products = () => {
     <div className="container">
       <AdminSidebar />
       <div className="py-2 p-2 w-full">
-        <Link to="/dashboard/admin/addproduct">
-          <button className="product-button text-pink-800 ">Add New Product +</button>
-        </Link>
         <div className="card grid gap-4">
+          <AddProduct />
           <section className="products">
             {items.length > 0 &&
               items.map((items) => {
