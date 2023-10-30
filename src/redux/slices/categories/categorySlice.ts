@@ -7,13 +7,13 @@ export type Category = {
 }
 
 export type CategoryState = {
-  items: Category[]
+  categories: Category[]
   error: null | string
   isLoading: boolean
 }
 
 const initialState: CategoryState = {
-  items: [],
+  categories: [],
   error: null,
   isLoading: false
 }
@@ -31,11 +31,18 @@ export const categoryReducer = createSlice({
   initialState,
   reducers: {
     deletetCategory: (state, action) => {
-      const filterCategory = state.items.filter((category) => category.id != action.payload)
-      state.items = filterCategory
+      const filterCategory = state.categories.filter((category) => category.id != action.payload)
+      state.categories = filterCategory
     },
     addCategory: (state, action) => {
-      state.items.push(action.payload)
+      state.categories.push(action.payload)
+    },
+    updateCategory: (state, action) => {
+      const { id, name } = action.payload
+      const foundCategory = state.categories.find((category) => category.id == id)
+      if (foundCategory) {
+        foundCategory.name = name
+      }
     }
   },
   extraReducers: (builder) => {
@@ -48,7 +55,7 @@ export const categoryReducer = createSlice({
 
       .addCase(fetchCategory.fulfilled, (state, action) => {
         state.isLoading = false
-        state.items = action.payload
+        state.categories = action.payload
       })
 
       .addCase(fetchCategory.rejected, (state, action) => {
@@ -57,5 +64,5 @@ export const categoryReducer = createSlice({
       })
   }
 })
-export const { addCategory, deletetCategory } = categoryReducer.actions
+export const { addCategory, updateCategory, deletetCategory } = categoryReducer.actions
 export default categoryReducer.reducer

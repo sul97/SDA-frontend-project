@@ -65,6 +65,19 @@ export const productsReducer = createSlice({
     deleteProduct: (state, action) => {
       const filterProducts = state.items.filter((product) => product.id != action.payload)
       state.items = filterProducts
+    },
+    updateProduct: (state, action) => {
+      const { id, name, image, description, categories, variants, sizes, price } = action.payload
+      const foundProduct = state.items.find((product) => product.id == id)
+      if (foundProduct) {
+        foundProduct.name = name
+        foundProduct.image = image
+        foundProduct.description = description
+        foundProduct.categories = categories
+        foundProduct.variants = variants
+        foundProduct.sizes = sizes
+        foundProduct.price = price
+      }
     }
   },
 
@@ -87,6 +100,12 @@ export const productsReducer = createSlice({
       })
   }
 })
-export const { sortProducts, searchProduct, addNewProduct, deleteProduct, findProductById } =
-  productsReducer.actions
+export const {
+  sortProducts,
+  searchProduct,
+  addNewProduct,
+  deleteProduct,
+  updateProduct,
+  findProductById
+} = productsReducer.actions
 export default productsReducer.reducer

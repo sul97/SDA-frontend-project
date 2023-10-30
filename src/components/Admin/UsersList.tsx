@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import AdminSidebar from './AdminSidebar'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteUser, fetchUsers, blockUser } from '../../redux/slices/users/userSlice'
 import { RootState, AppDispatch } from '../../redux/store'
+
+import AdminSidebar from './AdminSidebar'
 
 const UsersList = () => {
   const { users, isLoading, error } = useSelector((state: RootState) => state.usersReducer)

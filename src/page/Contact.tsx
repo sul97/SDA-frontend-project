@@ -1,6 +1,10 @@
 import React from 'react'
+import { toast } from 'react-toastify'
 
 const Contact = () => {
+  const handleClick = () => {
+    toast.success('Message sent successfully')
+  }
   return (
     <>
       <div className="product">
@@ -9,37 +13,37 @@ const Contact = () => {
         <div className="product-card">
           <form>
             <div className="form my-3">
-              <label htmlFor="Name">Name</label>
+              <label htmlFor="name">Name</label>
               <input
-                type="email"
+                type="text"
                 className="input-group__input"
-                id="Name"
+                id="name"
                 placeholder="Enter your name"
               />
             </div>
             <div className="form my-3">
-              <label htmlFor="Email">Email</label>
+              <label htmlFor="email">Email</label>
               <input
                 type="email"
                 className="input-group__input"
-                id="Email"
+                id="email"
                 placeholder="name@example.com"
               />
             </div>
             <div className="form  my-3">
-              <label htmlFor="Password">Message</label>
+              <label htmlFor="message">Message</label>
               <textarea
                 rows={5}
                 className="input-group__input"
-                id="Password"
+                id="message"
                 placeholder="Enter your message"
               />
             </div>
             <div className="text-center">
               <button
                 className="text-black-50 bg-gray-300 rounded-lg hover:bg-pink-100 "
-                type="submit"
-                disabled>
+                type="button"
+                onClick={handleClick}>
                 Send
               </button>
             </div>

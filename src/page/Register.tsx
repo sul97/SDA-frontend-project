@@ -1,7 +1,9 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { addUser, fetchUsers } from '../redux/slices/users/userSlice'
+import { toast } from 'react-toastify'
+
+import { addUser } from '../redux/slices/users/userSlice'
 import { AppDispatch } from '../redux/store'
 
 const Register = () => {
@@ -19,8 +21,9 @@ const Register = () => {
   })
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
     setUser((prevUser) => {
-      return { ...prevUser, [event.target.name]: event.target.value }
+      return { ...prevUser, [name]: value }
     })
   }
 
@@ -28,7 +31,8 @@ const Register = () => {
     event.preventDefault()
     const newUser = { id: new Date().getTime(), ...user }
 
-    dispatch(fetchUsers()).then(() => dispatch(addUser(newUser)))
+    dispatch(addUser(newUser))
+    toast.success('Successful Register')
     navigate('/login')
   }
 
@@ -40,47 +44,51 @@ const Register = () => {
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="FirstName">First Name</label>
+                <label htmlFor="firstName">First Name</label>
                 <input
                   type="text"
-                  className="input-group__input"
-                  id="FirstName"
+                  id="firstName"
+                  name="firstName"
                   placeholder="Enter Your First Name"
                   value={user.firstName}
                   onChange={handleChange}
+                  className="input-group__input"
                 />
               </div>
               <div className="form my-3">
-                <label htmlFor="LastName">Last Name</label>
+                <label htmlFor="lastName">Last Name</label>
                 <input
                   type="text"
-                  className="input-group__input"
-                  id="LastName"
+                  id="lastName"
+                  name="lastName"
                   placeholder="Enter Your Last Name"
                   value={user.lastName}
                   onChange={handleChange}
+                  className="input-group__input"
                 />
               </div>
               <div className="form my-3">
-                <label htmlFor="Email">Email address</label>
+                <label htmlFor="email">Email address</label>
                 <input
                   type="email"
-                  className="input-group__input"
-                  id="Email"
+                  id="email"
+                  name="email"
                   placeholder="name@example.com"
                   value={user.email}
                   onChange={handleChange}
+                  className="input-group__input"
                 />
               </div>
               <div className="form  my-3">
-                <label htmlFor="Password">Password</label>
+                <label htmlFor="password">Password</label>
                 <input
                   type="password"
-                  className="input-group__input"
-                  id="Password"
+                  id="password"
+                  name="password"
                   placeholder="Password"
                   value={user.password}
                   onChange={handleChange}
+                  className="input-group__input"
                 />
               </div>
               <div className="my-3">
@@ -94,8 +102,7 @@ const Register = () => {
               <div className="text-center">
                 <button
                   className="text-black-50 bg-gray-300 rounded-lg hover:bg-pink-100 "
-                  type="submit"
-                  disabled>
+                  type="submit">
                   Register
                 </button>
               </div>

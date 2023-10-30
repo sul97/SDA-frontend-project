@@ -1,11 +1,10 @@
-import UserSidebar from './UserSidebar'
+import UserProfile from './UserProfile'
 
 const UserDashboard = () => {
   return (
-    <div className="container">
-      <UserSidebar />
+    <div>
+      <UserProfile />
     </div>
   )
 }
-
 export default UserDashboard

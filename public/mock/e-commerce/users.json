@@ -15,7 +15,7 @@
     "email": "jane.smith@example.com",
     "password": "hashed_password",
     "role": "user",
-    "ban": false
+    "ban": true
   },
   {
     "id": 3,

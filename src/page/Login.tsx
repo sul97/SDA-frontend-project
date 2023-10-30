@@ -1,11 +1,17 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+
 import { AppDispatch, RootState } from '../redux/store'
 import { fetchUsers, login } from '../redux/slices/users/userSlice'
 
 const Login = ({ pathName }: { pathName: string }) => {
   const { users } = useSelector((state: RootState) => state.usersReducer)
+  const [user, setUser] = useState({
+    email: '',
+    password: ''
+  })
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
@@ -13,30 +19,28 @@ const Login = ({ pathName }: { pathName: string }) => {
   }, [dispatch])
 
   const navigate = useNavigate()
-  const [user, setUser] = useState({
-    email: '',
-    password: ''
-  })
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
     setUser((prevState) => {
-      return { ...prevState, [event.target.name]: event.target.value }
+      return { ...prevState, [name]: value }
     })
   }
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     try {
       const foundUser = users.find((userData) => userData.email === user.email)
 
       if (!foundUser) {
-        console.log('user not found')
+        toast.error('User not found')
         return
       }
       if (foundUser.password != user.password) {
-        console.log('password not match')
+        toast.error('Password does not match')
         return
       }
       if (foundUser.ban) {
-        console.log('You Are Block!!')
+        toast.error('You are blocked')
         return
       }
 
@@ -44,7 +48,7 @@ const Login = ({ pathName }: { pathName: string }) => {
         dispatch(login(foundUser))
         navigate(pathName ? pathName : `/dashboard/${foundUser.role}`)
       } else {
-        console.log('somthing wrong ')
+        toast.error('somthing wrong ')
       }
     } catch (error) {
       console.log(error)

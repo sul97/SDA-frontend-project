@@ -9,11 +9,13 @@ export const SingleProduct = () => {
   const { singlePoduct, isLoading, error } = useSelector(
     (state: RootState) => state.productsReducer
   )
+  const { categories } = useSelector((state: RootState) => state.categoryReducer)
+
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     dispatch(fetchData()).then(() => dispatch(findProductById(Number(id))))
-  }, [])
+  }, [id])
 
   if (isLoading) {
     return <p>Loading the data</p>
@@ -21,6 +23,12 @@ export const SingleProduct = () => {
   if (error) {
     return <p>{error}</p>
   }
+
+  const getCategoryNameById = (categoryId: number) => {
+    const category = categories.find((category) => category.id === categoryId)
+    return category ? category.name + ' - ' : 'not Found'
+  }
+
   return (
     <div className="">
       <div className="centered-content">
@@ -30,8 +38,14 @@ export const SingleProduct = () => {
               <img src={singlePoduct.image} alt={singlePoduct.name} width="500" height="300" />
               <h3 className="product-title">{singlePoduct.name}</h3>
               <p className="product-description">{singlePoduct.description}</p>
-              <p className="product-description">{singlePoduct.variants}</p>
-              <h3 className="product-title">{singlePoduct.price}</h3>
+              <p className="product-description">
+                {singlePoduct.variants && singlePoduct.variants.join(' - ')}
+              </p>
+              <p className="product-description">
+                {singlePoduct.categories &&
+                  singlePoduct.categories.map((categoryId) => getCategoryNameById(categoryId))}
+              </p>
+              <h3 className="product-title">{singlePoduct.price} SAR</h3>
               <br></br>
               <button className="product-button">Add</button>
               <Link to={'/'}>

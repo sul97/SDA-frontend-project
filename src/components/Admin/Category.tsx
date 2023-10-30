@@ -1,24 +1,21 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import AdminSidebar from './AdminSidebar'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import { RootState, AppDispatch } from '../../redux/store'
+import AdminSidebar from './AdminSidebar'
 import {
-  addCategory,
+  updateCategory,
   deletetCategory,
-  fetchCategory
+  fetchCategory,
+  addCategory
 } from '../../redux/slices/categories/categorySlice'
 
-export type Category = {
-  id: number
-  name: string
-}
-
 const Category = () => {
-  const { items, isLoading, error } = useSelector((state: RootState) => state.categoryReducer)
+  const { categories, isLoading, error } = useSelector((state: RootState) => state.categoryReducer)
+  const [category, setCategory] = useState('')
+  const [categoryEdit, setCategoryEdit] = useState(false)
+  const [categoryId, setCategoryId] = useState(0)
   const dispatch = useDispatch<AppDispatch>()
-  const [category, setCategory] = useState({
-    name: ''
-  })
 
   useEffect(() => {
     dispatch(fetchCategory())
@@ -30,65 +27,95 @@ const Category = () => {
   if (error) {
     return <p>{error}</p>
   }
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCategory((prevCategoryv) => {
-      return { ...prevCategoryv, [event.target.name]: event.target.value }
-    })
+    setCategory(event.target.value)
   }
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    const newCategory = { id: new Date().getTime(), ...category }
-
-    dispatch(fetchCategory()).then(() => dispatch(addCategory(newCategory)))
+    if (!categoryEdit) {
+      const newCategory = { id: new Date().getTime(), name: category }
+      dispatch(addCategory(newCategory))
+      toast.success('Successful Add Category')
+    } else {
+      const updateCategoryName = { id: categoryId, name: category }
+      dispatch(updateCategory(updateCategoryName))
+      toast.success('Successful Update Category')
+    }
   }
+
+  const handleEdit = (id: number, name: string) => {
+    setCategoryId(id)
+    setCategoryEdit(!categoryEdit)
+    if (!categoryEdit) {
+      setCategory(name)
+    } else {
+      setCategory('')
+    }
+  }
+
   const handleDeleteCategory = (id: number) => {
     dispatch(deletetCategory(id))
   }
-  const labelStyle = 'block text-sm font-medium text-gray-600'
+
   return (
     <div className="container">
       <AdminSidebar />
-      <div className="py-2 p-20  w-full">
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="name" className={labelStyle}></label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            className="input-group__input"
-            placeholder="Add Category Name"
-            value={category.name}
-            onChange={handleChange}
-          />
-          <button
-            type="submit"
-            className="w-30 text-black-50 bg-gray-200 rounded-lg hover:bg-pink-100 show-more-button">
-            Add Category +
-          </button>
-
-          <div className="card grid gap-4">
-            <section className="products">
-              {items.length > 0 &&
-                items.map((items) => {
-                  return (
-                    <article key={items.id} className="product">
-                      <div className="product-card">
-                        <h3 className="product-title">{items.name}</h3>
-                        <button className="text-green-800 product-button"> Edit</button>
-                        <button
-                          className="text-red-400 product-button show-more-button"
-                          onClick={() => {
-                            handleDeleteCategory(items.id)
-                          }}>
-                          Delete
-                        </button>
-                      </div>
-                    </article>
-                  )
-                })}
-            </section>
+      <div className=" main-content">
+        <div className="card grid gap-4">
+          <div className="py-2 p-20  w-full">
+            <div className="product">
+              <br></br>
+              <h1 className="text-center">Add a new Category</h1>
+              <form onSubmit={handleSubmit} className="product-card">
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    className="input-group__input"
+                    placeholder="Enter Category Name"
+                    value={category}
+                    onChange={handleChange}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-30 text-black-50 bg-gray-200 rounded-lg hover:bg-pink-100 show-more-button">
+                  {categoryEdit ? 'Update' : 'Add Category +'}
+                </button>
+              </form>
+            </div>
           </div>
-        </form>
+          <section className="products">
+            {categories.length > 0 &&
+              categories.map((category) => {
+                return (
+                  <article key={category.id} className="product">
+                    <div className="product-card">
+                      <h3 className="product-title">{category.name}</h3>
+                      <br></br>
+                      <button
+                        className="text-green-800 product-button"
+                        onClick={() => {
+                          handleEdit(category.id, category.name)
+                        }}>
+                        Edit
+                      </button>
+                      <button
+                        className="text-red-400 product-button show-more-button"
+                        onClick={() => {
+                          handleDeleteCategory(category.id)
+                        }}>
+                        Delete
+                      </button>
+                    </div>
+                  </article>
+                )
+              })}
+          </section>
+        </div>
       </div>
     </div>
   )

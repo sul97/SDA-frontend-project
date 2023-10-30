@@ -15,8 +15,8 @@ import ProtectedRoute from './ProtectedRoute'
 import AdminRoute from './AdminRoute'
 import Register from '../page/Register'
 import Products from '../components/Admin/Products'
-import AddProduct from '../components/Admin/AddProduct'
-import ProductsManager from '../components/ProductsManager'
+import OrdersList from '../components/Admin/OrdersList'
+import UserOrders from '../components/User/UserOrders'
 
 export const Index = () => {
   return (
@@ -32,15 +32,15 @@ export const Index = () => {
         <Route path="/dashboard" element={<ProtectedRoute />}>
           <Route path="user" element={<UserDashboard />}></Route>
           <Route path="user/profile" element={<UserProfile />}></Route>
-          <Route path="user/orders" element={<UserDashboard />}></Route>
+          <Route path="user/orders" element={<UserOrders />}></Route>
         </Route>
 
         <Route path="/dashboard" element={<AdminRoute />}>
           <Route path="admin" element={<AdminDashboard />}></Route>
           <Route path="admin/category" element={<Category />}></Route>
           <Route path="admin/products" element={<Products />}></Route>
-          <Route path="admin/addproduct" element={<AddProduct />}></Route>
           <Route path="admin/userslist" element={<UsersList />}></Route>
+          <Route path="admin/ordersList" element={<OrdersList />}></Route>
         </Route>
         <Route path="*" element={<Error />}></Route>
       </Routes>
