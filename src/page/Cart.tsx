@@ -18,11 +18,9 @@ const Cart = () => {
   }
 
   const cartTotal = () => {
-    let totalAmount = 0
-    cartItems.length > 0 &&
-      cartItems.map((cartItem) => (totalAmount = totalAmount + cartItem.price))
-    return totalAmount
+    return cartItems.reduce((totalAmount, cartItem) => totalAmount + cartItem.price, 0)
   }
+
   return (
     <div>
       <h1> You have - {cartItems.length > 0 ? cartItems.length : 0} - items in the cart</h1>

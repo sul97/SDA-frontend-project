@@ -38,7 +38,8 @@ const Home = () => {
   }
   //search
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(searchProduct(event.target.value))
+    const searchProductName = event.target.value
+    dispatch(searchProduct(searchProductName))
   }
 
   const filterProducts = searchTerm
