@@ -17,6 +17,8 @@ import Register from '../page/Register'
 import Products from '../components/Admin/Products'
 import OrdersList from '../components/Admin/OrdersList'
 import UserOrders from '../components/User/UserOrders'
+import CartIcon from '../components/CartIcon'
+import Cart from '../page/Cart'
 
 export const Index = () => {
   return (
@@ -26,6 +28,7 @@ export const Index = () => {
         <Route path="/" element={<Home />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
+        <Route path="/cart" element={<Cart />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
         <Route path="/product/:id" element={<ProductDetails />} />
 

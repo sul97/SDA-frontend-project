@@ -2,16 +2,16 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
 import { Link, useParams } from 'react-router-dom'
+
 import { fetchData, findProductById } from '../redux/slices/products/productsSlice'
 
 export const SingleProduct = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const { id } = useParams()
   const { singlePoduct, isLoading, error } = useSelector(
     (state: RootState) => state.productsReducer
   )
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
-
-  const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     dispatch(fetchData()).then(() => dispatch(findProductById(Number(id))))

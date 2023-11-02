@@ -7,9 +7,8 @@ import { addUser } from '../redux/slices/users/userSlice'
 import { AppDispatch } from '../redux/store'
 
 const Register = () => {
-  const navigate = useNavigate()
-
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
 
   const [user, setUser] = useState({
     firstName: '',
@@ -19,6 +18,10 @@ const Register = () => {
     role: 'user',
     ban: false
   })
+
+  const [firstNameError, setFirstNameError] = useState('')
+  const [lastNameError, setLastNameError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -30,7 +33,26 @@ const Register = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     const newUser = { id: new Date().getTime(), ...user }
-
+    if (user.firstName.length < 2) {
+      setFirstNameError('must be at least 2 characters')
+      return
+    }
+    if (user.lastName.length < 2) {
+      setLastNameError('must be at least 2 characters')
+      return
+    }
+    if (user.password.length < 6) {
+      setPasswordError('Password must be at least 6 characters')
+      return
+    }
+    if (!/[A-Z]/.test(user.password)) {
+      setPasswordError('Password must contain at least one uppercase letter')
+      return
+    }
+    if (!/[@#$%^&+=]/.test(user.password)) {
+      setPasswordError('Password must contain at least one special character')
+      return
+    }
     dispatch(addUser(newUser))
     toast.success('Successful Register')
     navigate('/login')
@@ -53,7 +75,9 @@ const Register = () => {
                   value={user.firstName}
                   onChange={handleChange}
                   className="input-group__input"
+                  required
                 />
+                <p>{firstNameError}</p>
               </div>
               <div className="form my-3">
                 <label htmlFor="lastName">Last Name</label>
@@ -65,7 +89,9 @@ const Register = () => {
                   value={user.lastName}
                   onChange={handleChange}
                   className="input-group__input"
+                  required
                 />
+                <p>{lastNameError}</p>
               </div>
               <div className="form my-3">
                 <label htmlFor="email">Email address</label>
@@ -77,6 +103,7 @@ const Register = () => {
                   value={user.email}
                   onChange={handleChange}
                   className="input-group__input"
+                  required
                 />
               </div>
               <div className="form  my-3">
@@ -89,7 +116,9 @@ const Register = () => {
                   value={user.password}
                   onChange={handleChange}
                   className="input-group__input"
+                  required
                 />
+                <p>{passwordError}</p>
               </div>
               <div className="my-3">
                 <p>

@@ -7,12 +7,12 @@ import { AppDispatch, RootState } from '../redux/store'
 import { fetchUsers, login } from '../redux/slices/users/userSlice'
 
 const Login = ({ pathName }: { pathName: string }) => {
+  const dispatch = useDispatch<AppDispatch>()
   const { users } = useSelector((state: RootState) => state.usersReducer)
   const [user, setUser] = useState({
     email: '',
     password: ''
   })
-  const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     dispatch(fetchUsers())

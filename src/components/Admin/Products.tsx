@@ -1,17 +1,19 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
+import { RootState, AppDispatch } from '../../redux/store'
+
 import {
   addNewProduct,
   deleteProduct,
   fetchData,
   updateProduct
 } from '../../redux/slices/products/productsSlice'
-import { RootState, AppDispatch } from '../../redux/store'
 
 import AdminSidebar from './AdminSidebar'
 
 const Products = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const { items, isLoading, error } = useSelector((state: RootState) => state.productsReducer)
   const [productEdit, setProductEdit] = useState(false)
   const [productId, setProductId] = useState(0)
@@ -24,8 +26,13 @@ const Products = () => {
     sizes: [''],
     price: 0
   })
-
-  const dispatch = useDispatch<AppDispatch>()
+  const [productNameError, setProductNameError] = useState('')
+  const [descriptionError, setDescriptionError] = useState('')
+  const [categoriesError, setCategoriesError] = useState([''])
+  const [variantsError, setVariantsError] = useState([''])
+  const [sizesError, setSizesError] = useState([''])
+  const [priceError, setPriceError] = useState(0)
+  const [priceErrorMessage, setPriceErrorMessage] = useState('')
 
   useEffect(() => {
     dispatch(fetchData())
@@ -57,6 +64,42 @@ const Products = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
+    let isValid = true
+
+    if (product.name.length < 2) {
+      setProductNameError('Product name  must be at least 3 characters')
+      isValid = false
+    }
+
+    if (product.description.length < 5) {
+      setDescriptionError('Description must be at least 5 characters')
+      isValid = false
+    }
+
+    if (product.categories.length === 0) {
+      setCategoriesError(['At least one category is required'])
+      isValid = false
+    }
+
+    if (product.variants.length === 0) {
+      setVariantsError(['At least one variant is required'])
+      isValid = false
+    }
+
+    if (product.sizes.length === 0) {
+      setSizesError(['At least one size is required'])
+      isValid = false
+    }
+
+    if (product.price <= 0) {
+      setPriceError(0)
+      setPriceErrorMessage('Price must be a positive number')
+      isValid = false
+    }
+
+    if (!isValid) {
+      return
+    }
     if (!productEdit) {
       const newProduct = { id: new Date().getTime(), ...product }
       dispatch(addNewProduct(newProduct))
@@ -119,7 +162,7 @@ const Products = () => {
       <AdminSidebar />
       <div className=" main-content">
         <div className="card grid gap-4">
-          <div className="py-2 p-20 w-full">
+          <div className="py-2  w-full">
             <div className="product">
               <br></br>
               <h1 className="text-center">Add a new product</h1>
@@ -135,7 +178,9 @@ const Products = () => {
                     className="input-product"
                     value={product.name}
                     onChange={handleChange}
+                    required
                   />
+                  <p>{productNameError}</p>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="image" className={labelStyle}>
@@ -148,6 +193,7 @@ const Products = () => {
                     value={product.image}
                     onChange={handleChange}
                     className="input-product"
+                    required
                   />
                 </div>
                 <div className="mb-4">
@@ -160,7 +206,9 @@ const Products = () => {
                     value={product.description}
                     onChange={handleChange}
                     className="input-product"
+                    required
                   />
+                  <p>{descriptionError}</p>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="categories" className={labelStyle}>
@@ -173,7 +221,9 @@ const Products = () => {
                     value={product.categories.join(' - ')}
                     onChange={handleChange}
                     className="input-product"
+                    required
                   />
+                  <p>{categoriesError}</p>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="variants" className={labelStyle}>
@@ -186,7 +236,9 @@ const Products = () => {
                     value={product.variants.join(' - ')}
                     onChange={handleChange}
                     className="input-product"
+                    required
                   />
+                  <p>{variantsError}</p>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="sizes" className={labelStyle}>
@@ -199,7 +251,9 @@ const Products = () => {
                     value={product.sizes.join(' - ')}
                     onChange={handleChange}
                     className="input-product"
+                    required
                   />
+                  <p>{sizesError}</p>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="sizes" className={labelStyle}>
@@ -212,7 +266,9 @@ const Products = () => {
                     value={product.price}
                     onChange={handleChange}
                     className="input-product"
+                    required
                   />
+                  <p>{priceErrorMessage}</p>
                 </div>
                 <button type="submit" className="product-button text-blue-900 bg-gray-300 ">
                   {productEdit ? 'Update' : 'Add Product +'}

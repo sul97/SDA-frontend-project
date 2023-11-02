@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { RootState, AppDispatch } from '../../redux/store'
-import AdminSidebar from './AdminSidebar'
+
 import {
   updateCategory,
   deletetCategory,
@@ -10,12 +10,15 @@ import {
   addCategory
 } from '../../redux/slices/categories/categorySlice'
 
+import AdminSidebar from './AdminSidebar'
+
 const Category = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const { categories, isLoading, error } = useSelector((state: RootState) => state.categoryReducer)
   const [category, setCategory] = useState('')
   const [categoryEdit, setCategoryEdit] = useState(false)
   const [categoryId, setCategoryId] = useState(0)
-  const dispatch = useDispatch<AppDispatch>()
+  const [categoryNameError, setCategoryNameError] = useState('')
 
   useEffect(() => {
     dispatch(fetchCategory())
@@ -34,6 +37,17 @@ const Category = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
+    setCategoryNameError('')
+
+    let isValid = true
+
+    if (category.length < 3) {
+      setCategoryNameError('category name must be at least 3 characters')
+      isValid = false
+    }
+    if (!isValid) {
+      return
+    }
     if (!categoryEdit) {
       const newCategory = { id: new Date().getTime(), name: category }
       dispatch(addCategory(newCategory))
@@ -64,7 +78,7 @@ const Category = () => {
       <AdminSidebar />
       <div className=" main-content">
         <div className="card grid gap-4">
-          <div className="py-2 p-20  w-full">
+          <div className="p-10 w-full">
             <div className="product">
               <br></br>
               <h1 className="text-center">Add a new Category</h1>
@@ -74,11 +88,13 @@ const Category = () => {
                     type="text"
                     name="name"
                     id="name"
-                    className="input-group__input"
+                    className="input-product"
                     placeholder="Enter Category Name"
                     value={category}
                     onChange={handleChange}
+                    required
                   />
+                  <p>{categoryNameError}</p>
                 </div>
                 <button
                   type="submit"
