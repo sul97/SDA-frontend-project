@@ -31,12 +31,11 @@ const Home = () => {
     return <p>{error}</p>
   }
 
-  //addCart
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart(product))
     toast.success('Successful Add To Cart')
   }
-  //search
+
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchProductName = event.target.value
     dispatch(searchProduct(searchProductName))
@@ -46,7 +45,6 @@ const Home = () => {
     ? items.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
     : items
 
-  //category
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedCategory = event.target.value
     setSelectCategory(selectedCategory === '' ? '' : Number(selectedCategory))

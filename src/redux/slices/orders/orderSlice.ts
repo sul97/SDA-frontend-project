@@ -34,7 +34,6 @@ export const orderReducer = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      //all
       .addCase(fetchOrders.pending, (state, action) => {
         state.isLoading = true
         state.error = null

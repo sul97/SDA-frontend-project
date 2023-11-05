@@ -99,7 +99,6 @@ export const usersReducer = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //all
       .addCase(fetchUsers.pending, (state, action) => {
         state.isLoading = true
         state.error = null

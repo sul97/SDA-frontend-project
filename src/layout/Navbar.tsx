@@ -13,7 +13,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logout())
-    // navigate('/')
   }
   return (
     <div className="nav">

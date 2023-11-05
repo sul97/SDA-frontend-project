@@ -5,6 +5,7 @@ import { RootState } from '../../redux/store'
 
 const AdminSidebar = () => {
   const { userData } = useSelector((state: RootState) => state.usersReducer)
+
   return (
     <aside className="sidebar">
       <Link to="/dashboard/admin" className="user-profile-link">

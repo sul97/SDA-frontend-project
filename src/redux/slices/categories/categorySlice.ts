@@ -47,7 +47,6 @@ export const categoryReducer = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //all
       .addCase(fetchCategory.pending, (state, action) => {
         state.isLoading = true
         state.error = null

@@ -83,7 +83,6 @@ export const productsReducer = createSlice({
 
   extraReducers: (builder) => {
     builder
-      //all
       .addCase(fetchData.pending, (state, action) => {
         state.isLoading = true
         state.error = null

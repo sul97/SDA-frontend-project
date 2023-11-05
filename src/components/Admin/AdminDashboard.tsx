@@ -47,7 +47,6 @@ const AdminDashboard = () => {
     }
     const updatUserData = { id: userData?.id, ...user }
     dispatch(updateUser(updatUserData))
-    console.log(updatUserData)
   }
   return (
     <div className="container">

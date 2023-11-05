@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
 import { Link, useParams } from 'react-router-dom'
 
-import { fetchData, findProductById } from '../redux/slices/products/productsSlice'
+import { Product, fetchData, findProductById } from '../redux/slices/products/productsSlice'
+import { toast } from 'react-toastify'
+import { addToCart } from '../redux/slices/cart/cartSlice'
 
 export const SingleProduct = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -13,6 +15,10 @@ export const SingleProduct = () => {
   )
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
 
+  const handleAddToCart = (product: Product) => {
+    dispatch(addToCart(product))
+    toast.success('Successful Add To Cart')
+  }
   useEffect(() => {
     dispatch(fetchData()).then(() => dispatch(findProductById(Number(id))))
   }, [id])
@@ -47,7 +53,13 @@ export const SingleProduct = () => {
               </p>
               <h3 className="product-title">{singlePoduct.price} SAR</h3>
               <br></br>
-              <button className="product-button">Add</button>
+              <button
+                className="product-button"
+                onClick={() => {
+                  handleAddToCart(singlePoduct)
+                }}>
+                Add to Cart
+              </button>
               <Link to={'/'}>
                 <button className="product-button show-more-button">Back</button>
               </Link>
