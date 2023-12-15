@@ -45,7 +45,7 @@ const AdminDashboard = () => {
     if (!isValid) {
       return
     }
-    const updatUserData = { id: userData?.id, ...user }
+    const updatUserData = { id: userData?._id, ...user }
     dispatch(updateUser(updatUserData))
   }
   return (

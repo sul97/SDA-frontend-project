@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { deleteUser, fetchUsers, blockUser } from '../../redux/slices/users/userSlice'
+import { fetchUsers } from '../../redux/slices/users/userSlice'
 import { RootState, AppDispatch } from '../../redux/store'
 
 import AdminSidebar from './AdminSidebar'
+import { toast } from 'react-toastify'
+import { banUser, baseUrl, deleteUser, unbanUser } from '../../services/UserService'
 
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -20,11 +22,23 @@ const UsersList = () => {
   if (error) {
     return <p>{error}</p>
   }
-  const handleDelete = (id: number) => {
-    dispatch(deleteUser(id))
+  const handleDelete = async (id: string) => {
+    try {
+      const response = deleteUser(id)
+      toast.success('Successful Delete User')
+      dispatch(fetchUsers())
+    } catch (error) {
+      toast.error('Error deleting')
+    }
   }
-  const handleBlock = (id: number) => {
-    dispatch(blockUser(id))
+  const handleBlockAndUnBlock = async (id: string, isBanned: boolean) => {
+    try {
+      const response = isBanned ? await unbanUser(id) : await banUser(id)
+      dispatch(fetchUsers())
+      toast.success('Successful Block User')
+    } catch (error) {
+      toast.error('Error Blocking')
+    }
   }
 
   return (
@@ -36,26 +50,25 @@ const UsersList = () => {
             <section className="products">
               {users.length > 0 &&
                 users.map((user) => {
-                  if (user.role != 'admin') {
+                  if (!user.isAdmin) {
                     return (
-                      <article key={user.id} className="product">
+                      <article key={user._id} className="product">
                         <div className="product-card">
-                          <h3 className="product-title">
-                            {user.firstName} {user.lastName}
-                          </h3>
+                          <img src={`${baseUrl}/${user.image}`} alt={user.image} />
+                          <h3 className="product-title">{user.name}</h3>
                           <p className="product-description">{user.email}</p>
-                          <p className="product-description">{user.role}</p>
+                          {/* <p className="product-description">{user.role}</p> */}
                           <button
                             className="text-red-800 product-button"
                             onClick={() => {
-                              handleBlock(user.id)
+                              handleBlockAndUnBlock(user._id, user.isBanned)
                             }}>
-                            {user.ban ? 'unblock' : 'block'}
+                            {user.isBanned ? 'unblock' : 'block'}
                           </button>
                           <button
                             className="text-red-400 product-button show-more-button"
                             onClick={() => {
-                              handleDelete(user.id)
+                              handleDelete(user._id)
                             }}>
                             Delete
                           </button>

@@ -1,44 +1,52 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import { addUser } from '../redux/slices/users/userSlice'
 import { AppDispatch } from '../redux/store'
+import { createUser } from '../services/UserService'
 
 const Register = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
 
   const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     password: '',
-    role: 'user',
-    ban: false
+    image: '',
+    address: '',
+    phone: ''
   })
 
-  const [firstNameError, setFirstNameError] = useState('')
-  const [lastNameError, setLastNameError] = useState('')
+  const [nameError, setNameError] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setUser((prevUser) => {
-      return { ...prevUser, [name]: value }
-    })
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (event.target.type === 'file') {
+      const fileInput = (event.target as HTMLInputElement) || ''
+      setUser((prevUser) => {
+        return { ...prevUser, [event.target.name]: fileInput.files?.[0] }
+      })
+    } else {
+      setUser((prevUser) => {
+        return { ...prevUser, [event.target.name]: event.target.value }
+      })
+    }
   }
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    const newUser = { id: new Date().getTime(), ...user }
-    if (user.firstName.length < 2) {
-      setFirstNameError('must be at least 2 characters')
-      return
-    }
-    if (user.lastName.length < 2) {
-      setLastNameError('must be at least 2 characters')
+
+    const formData = new FormData()
+    formData.append('name', user.name)
+    formData.append('email', user.email)
+    formData.append('password', user.password)
+    formData.append('address', user.address)
+    formData.append('phone', user.phone)
+    formData.append('image', user.image)
+
+    if (user.name.length < 2) {
+      setNameError('must be at least 2 characters')
       return
     }
     if (user.password.length < 6) {
@@ -53,9 +61,13 @@ const Register = () => {
       setPasswordError('Password must contain at least one special character')
       return
     }
-    dispatch(addUser(newUser))
-    toast.success('Successful Register')
-    navigate('/login')
+
+    try {
+      const response = await createUser(formData)
+      toast.success(`${response.message}`)
+    } catch (error) {
+      toast.error(`Error adding user ${error.response.data.message}`)
+    }
   }
 
   return (
@@ -66,32 +78,18 @@ const Register = () => {
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="firstName">First Name</label>
+                <label htmlFor="name">Name</label>
                 <input
                   type="text"
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Enter Your First Name"
-                  value={user.firstName}
+                  id="name"
+                  name="name"
+                  placeholder="Enter Your Name"
+                  value={user.name}
                   onChange={handleChange}
                   className="input-group__input"
                   required
                 />
-                <p>{firstNameError}</p>
-              </div>
-              <div className="form my-3">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Enter Your Last Name"
-                  value={user.lastName}
-                  onChange={handleChange}
-                  className="input-group__input"
-                  required
-                />
-                <p>{lastNameError}</p>
+                <p>{nameError}</p>
               </div>
               <div className="form my-3">
                 <label htmlFor="email">Email address</label>
@@ -119,6 +117,42 @@ const Register = () => {
                   required
                 />
                 <p>{passwordError}</p>
+              </div>
+              <div className="form my-3">
+                <label htmlFor="phone">Phone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="0500000000"
+                  value={user.phone}
+                  onChange={handleChange}
+                  className="input-group__input"
+                  required
+                />
+              </div>
+              <div className="form my-3">
+                <label htmlFor="address">Address</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  placeholder="aaa - bbb - ddd"
+                  value={user.address}
+                  onChange={handleChange}
+                  className="input-group__input"
+                  required
+                />
+              </div>
+              <div className="form my-3">
+                <label htmlFor="image">Profile image</label>
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="input-group__input"
+                  required
+                />
               </div>
               <div className="my-3">
                 <p>

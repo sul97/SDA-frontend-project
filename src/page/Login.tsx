@@ -39,7 +39,7 @@ const Login = ({ pathName }: { pathName: string }) => {
         toast.error('Password does not match')
         return
       }
-      if (foundUser.ban) {
+      if (foundUser.isBanned) {
         toast.error('You are blocked')
         return
       }

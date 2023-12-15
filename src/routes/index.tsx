@@ -18,6 +18,7 @@ import Products from '../components/Admin/Products'
 import OrdersList from '../components/Admin/OrdersList'
 import UserOrders from '../components/User/UserOrders'
 import Cart from '../page/Cart'
+import ActivatePage from '../components/User/ActivatePage'
 
 export const Index = () => {
   return (
@@ -25,26 +26,27 @@ export const Index = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/login" element={<Login pathName="" />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/users/activate/:token" element={<ActivatePage />} />
 
-        <Route path="/dashboard" element={<ProtectedRoute />}>
-          <Route path="user" element={<UserDashboard />}></Route>
-          <Route path="user/profile" element={<UserProfile />}></Route>
-          <Route path="user/orders" element={<UserOrders />}></Route>
-        </Route>
+        {/* <Route path="/dashboard" element={<ProtectedRoute />}> */}
+        <Route path="user" element={<UserDashboard />}></Route>
+        <Route path="user/profile" element={<UserProfile />}></Route>
+        <Route path="user/orders" element={<UserOrders />}></Route>
+        {/* </Route> */}
 
-        <Route path="/dashboard" element={<AdminRoute />}>
-          <Route path="admin" element={<AdminDashboard />}></Route>
-          <Route path="admin/category" element={<Category />}></Route>
-          <Route path="admin/products" element={<Products />}></Route>
-          <Route path="admin/userslist" element={<UsersList />}></Route>
-          <Route path="admin/ordersList" element={<OrdersList />}></Route>
-        </Route>
-        <Route path="*" element={<Error />}></Route>
+        {/* <Route path="/dashboard" element={<AdminRoute />}> */}
+        <Route path="admin" element={<AdminDashboard />}></Route>
+        <Route path="admin/category" element={<Category />}></Route>
+        <Route path="admin/products" element={<Products />}></Route>
+        <Route path="admin/userslist" element={<UsersList />}></Route>
+        <Route path="admin/ordersList" element={<OrdersList />}></Route>
+        {/* </Route> */}
+        {/* <Route path="*" element={<Error />}></Route> */}
       </Routes>
       <Footer />
     </BrowserRouter>

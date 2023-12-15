@@ -1,14 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import api from '../../../api'
+import axios from 'axios'
+
+import { baseUrl } from '../../../services/UserService'
 
 export type User = {
-  id: number
-  firstName: string
-  lastName: string
+  _id: string
+  name: string
   email: string
   password: string
-  role: string
-  ban: boolean
+  image: string
+  address: string
+  phone: string
+  isAdmin: boolean
+  isBanned: boolean
 }
 
 export type UsersState = {
@@ -32,13 +36,10 @@ const initialState: UsersState = {
   userData: data.userData,
   ban: false
 }
-export const fetchUsers = createAsyncThunk('users/fetchCategory', async () => {
-  try {
-    const response = await api.get('./mock/e-commerce/users.json')
-    return response.data
-  } catch (error) {
-    throw new Error('Failed to fetch data')
-  }
+
+export const fetchUsers = createAsyncThunk('users/fetchUser', async () => {
+  const response = await axios.get(`${baseUrl}/users`)
+  return response.data.payload.users
 })
 
 export const usersReducer = createSlice({
@@ -67,25 +68,15 @@ export const usersReducer = createSlice({
         })
       )
     },
-    deleteUser: (state, action) => {
-      const filterUsers = state.users.filter((user) => user.id != action.payload)
-      state.users = filterUsers
-    },
-    blockUser: (state, action) => {
-      const foundUser = state.users.find((user) => user.id == action.payload)
-      if (foundUser) {
-        foundUser.ban = !foundUser.ban
-      }
-    },
     addUser: (state, action) => {
       state.users.push(action.payload)
     },
     updateUser: (state, action) => {
-      const { id, firstName, lastName } = action.payload
-      const foundUser = state.users.find((user) => user.id == id)
+      const { id, firstName } = action.payload
+      const foundUser = state.users.find((user) => user._id == id)
       if (foundUser) {
-        foundUser.firstName = firstName
-        foundUser.lastName = lastName
+        foundUser.name = firstName
+
         state.userData = foundUser
         localStorage.setItem(
           'loginData',
@@ -115,5 +106,5 @@ export const usersReducer = createSlice({
       })
   }
 })
-export const { login, logout, addUser, deleteUser, blockUser, updateUser } = usersReducer.actions
+export const { login, logout, updateUser } = usersReducer.actions
 export default usersReducer.reducer
