@@ -5,9 +5,13 @@ import { toast } from 'react-toastify'
 
 import { AppDispatch, RootState } from '../redux/store'
 import { fetchUsers, login } from '../redux/slices/users/userSlice'
+import axios from 'axios'
+import { baseUrl } from '../services/UserService'
 
 const Login = ({ pathName }: { pathName: string }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+
   const { users } = useSelector((state: RootState) => state.usersReducer)
   const [user, setUser] = useState({
     email: '',
@@ -18,38 +22,38 @@ const Login = ({ pathName }: { pathName: string }) => {
     dispatch(fetchUsers())
   }, [dispatch])
 
-  const navigate = useNavigate()
-
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
     setUser((prevState) => {
       return { ...prevState, [name]: value }
     })
   }
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     try {
-      const foundUser = users.find((userData) => userData.email === user.email)
+      await axios.post(`${baseUrl}/auth/login`, user)
+      navigate(`/`)
+      // const foundUser = users.find((userData) => userData.email === user.email)
 
-      if (!foundUser) {
-        toast.error('User not found')
-        return
-      }
-      if (foundUser.password != user.password) {
-        toast.error('Password does not match')
-        return
-      }
-      if (foundUser.isBanned) {
-        toast.error('You are blocked')
-        return
-      }
+      // if (!foundUser) {
+      //   toast.error('User not found')
+      //   return
+      // }
+      // if (foundUser.password != user.password) {
+      //   toast.error('Password does not match')
+      //   return
+      // }
+      // if (foundUser.isBanned) {
+      //   toast.error('You are blocked')
+      //   return
+      // }
 
-      if (foundUser && foundUser.password === user.password) {
-        dispatch(login(foundUser))
-        navigate(pathName ? pathName : `/dashboard/${foundUser.role}`)
-      } else {
-        toast.error('somthing wrong ')
-      }
+      // if (foundUser && foundUser.password === user.password) {
+      //   dispatch(login(foundUser))
+      //   navigate(pathName ? pathName : `/dashboard/${foundUser.role}`)
+      // } else {
+      //   toast.error('somthing wrong ')
+      // }
     } catch (error) {
       console.log(error)
     }

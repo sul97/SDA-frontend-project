@@ -8,6 +8,7 @@ import { fetchData, searchProduct, Product } from '../redux/slices/products/prod
 import { addToCart } from '../redux/slices/cart/cartSlice'
 
 import SortProduct from '../components/SortProduct'
+import { baseUrl } from '../services/UserService'
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -42,7 +43,7 @@ const Home = () => {
   }
 
   const filterProducts = searchTerm
-    ? items.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    ? items.filter((product) => product.title.toLowerCase().includes(searchTerm.toLowerCase()))
     : items
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -54,7 +55,7 @@ const Home = () => {
     if (category === '') {
       return products
     }
-    return products.filter((product) => product.categories.includes(category))
+    return products.filter((product) => product.category.includes(category))
   }
 
   const filteredProducts = filterProductsByCategory(filterProducts, selectCategory)
@@ -111,12 +112,12 @@ const Home = () => {
       <section className="products">
         {currentItems.length > 0 &&
           currentItems.map((items) => {
-            const { id, name, image, price } = items
+            const { _id, title, image, price } = items
             return (
-              <article key={id} className="product">
+              <article key={_id} className="product">
                 <div className="product-card">
-                  <img src={image} alt={name} />
-                  <h1 className="product-title">{name}</h1>
+                  <img src={`${baseUrl}/${image}`} alt={title} />
+                  <h1 className="product-title">{title}</h1>
                   <h2 className="product-description">{price} SAR</h2>
                   <button
                     className="product-button"
@@ -125,7 +126,7 @@ const Home = () => {
                     }}>
                     Add to Cart
                   </button>
-                  <Link to={`/product/${id}`}>
+                  <Link to={`/product/${items.slug}`}>
                     <button className="product-button show-more-button">show more</button>
                   </Link>
                 </div>

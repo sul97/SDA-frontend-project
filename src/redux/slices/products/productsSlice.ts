@@ -2,14 +2,26 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import api from '../../../api'
 
 export type Product = {
-  id: number
-  name: string
-  image: string
-  description: string
-  categories: number[]
-  variants: string[]
-  sizes: string[]
+  // id: number
+  // name: string
+  // image: string
+  // description: string
+  // categories: number[]
+  // variants: string[]
+  // sizes: string[]
+  // price: number
+  _id: string
+  title: string
+  slug?: string
   price: number
+  image: string
+  category: ['_id']
+  description: string
+  quantity: number
+  sold: number
+  shipping?: number
+  createdAt: string
+  updatedAt: string
 }
 
 export type ProductState = {
@@ -28,12 +40,8 @@ const initialState: ProductState = {
   singlePoduct: {} as Product
 }
 export const fetchData = createAsyncThunk('products/fetchData', async () => {
-  try {
-    const response = await api.get('./mock/e-commerce/products.json')
-    return response.data
-  } catch (error) {
-    throw new Error('Failed to fetch data')
-  }
+  const response = await api.get(`http://localhost:5050/products`)
+  return response.data.payload.products
 })
 
 export const productsReducer = createSlice({
@@ -45,7 +53,7 @@ export const productsReducer = createSlice({
     },
     findProductById: (state, action) => {
       const id = action.payload
-      const foundProduct = state.items.find((product) => product.id === id)
+      const foundProduct = state.items.find((product) => product._id === id)
       if (foundProduct) {
         state.singlePoduct = foundProduct
       }
@@ -54,7 +62,7 @@ export const productsReducer = createSlice({
       const sortingCriteria = action.payload
 
       if (sortingCriteria == 'name') {
-        state.items.sort((a, b) => a.name.localeCompare(b.name))
+        state.items.sort((a, b) => a.title.localeCompare(b.title))
       } else if (sortingCriteria == 'price') {
         state.items.sort((a, b) => a.price - b.price)
       }

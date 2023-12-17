@@ -28,7 +28,7 @@ const OrdersList = () => {
   }
   const getUserNameById = (userId: number) => {
     const user = users.find((user) => user.id === userId)
-    return user ? user.firstName : '- User -'
+    return user ? user.name : '- User -'
   }
   return (
     <div className="container">

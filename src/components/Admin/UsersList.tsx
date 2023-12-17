@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 
-import { fetchUsers } from '../../redux/slices/users/userSlice'
+import { banUser, unbanUser, deleteUser, fetchUsers } from '../../redux/slices/users/userSlice'
 import { RootState, AppDispatch } from '../../redux/store'
 
 import AdminSidebar from './AdminSidebar'
-import { toast } from 'react-toastify'
-import { banUser, baseUrl, deleteUser, unbanUser } from '../../services/UserService'
+import { baseUrl } from '../../services/UserService'
 
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -16,26 +16,25 @@ const UsersList = () => {
     dispatch(fetchUsers())
   }, [dispatch])
 
-  if (isLoading) {
-    return <p>Loading the data...</p>
-  }
-  if (error) {
-    return <p>{error}</p>
-  }
+  // if (isLoading) {
+  //   return <p>Loading the data...</p>
+  // }
+  // if (error) {
+  //   return <p>{error}</p>
+  // }
   const handleDelete = async (id: string) => {
     try {
-      const response = deleteUser(id)
-      toast.success('Successful Delete User')
+      dispatch(deleteUser(id))
       dispatch(fetchUsers())
+      toast.success('Successful Delete User')
     } catch (error) {
       toast.error('Error deleting')
     }
   }
   const handleBlockAndUnBlock = async (id: string, isBanned: boolean) => {
     try {
-      const response = isBanned ? await unbanUser(id) : await banUser(id)
-      dispatch(fetchUsers())
-      toast.success('Successful Block User')
+      const response = isBanned ? dispatch(unbanUser(id)) : dispatch(banUser(id))
+      toast.success(`User ${isBanned ? 'Unblocked' : 'Blocked'} successfully`)
     } catch (error) {
       toast.error('Error Blocking')
     }

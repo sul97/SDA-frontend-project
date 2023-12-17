@@ -11,7 +11,7 @@ const AdminSidebar = () => {
       <Link to="/dashboard/admin" className="user-profile-link">
         <div className="user-profile">
           <h2>Admin Profile</h2>
-          <p className="user-name">{`${userData?.firstName} ${userData?.lastName}`}</p>
+          <p className="user-name">{`${userData?.name}`}</p>
           <p className="user-email">{`${userData?.email}`}</p>
         </div>
       </Link>

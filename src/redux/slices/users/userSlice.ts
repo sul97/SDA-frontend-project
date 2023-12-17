@@ -37,10 +37,27 @@ const initialState: UsersState = {
   ban: false
 }
 
-export const fetchUsers = createAsyncThunk('users/fetchUser', async () => {
-  const response = await axios.get(`${baseUrl}/users`)
-  return response.data.payload.users
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
+  const response = await axios.get<User[]>(`${baseUrl}/users`)
+  return response.data
 })
+export const deleteUser = createAsyncThunk('users/deleteUser', async (id: string) => {
+  await axios.delete<User[]>(`${baseUrl}/users/${id}`)
+  return id
+})
+export const banUser = createAsyncThunk('users/banUser', async (id: string) => {
+  await axios.put<User[]>(`${baseUrl}/users/ban/${id}`)
+  return id
+})
+export const unbanUser = createAsyncThunk('users/unbanUser', async (id: string) => {
+  await axios.put<User[]>(`${baseUrl}/users/unban/${id}`)
+  return id
+})
+
+// export const logInUser = async (newUser: {}) => {
+//   const response = await axios.post(`${baseUrl}/auth/login`, newUser)
+//   return response.data
+// }
 
 export const usersReducer = createSlice({
   name: 'users',
@@ -71,6 +88,9 @@ export const usersReducer = createSlice({
     addUser: (state, action) => {
       state.users.push(action.payload)
     },
+    deleteSingleUser: (state, action) => {
+      state.users.push(action.payload)
+    },
     updateUser: (state, action) => {
       const { id, firstName } = action.payload
       const foundUser = state.users.find((user) => user._id == id)
@@ -89,22 +109,44 @@ export const usersReducer = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchUsers.pending, (state, action) => {
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+      state.users = action.payload.payload.users
+      state.isLoading = false
+    })
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      state.users = state.users.filter((user) => user._id === action.payload)
+      state.isLoading = false
+    })
+    builder.addCase(banUser.fulfilled, (state, action) => {
+      state.isLoading = false
+      const foundUser = state.users.find((user) => user._id === action.payload)
+      if (foundUser) {
+        foundUser.isBanned = true
+      }
+    })
+    builder.addCase(unbanUser.fulfilled, (state, action) => {
+      state.isLoading = false
+      const foundUser = state.users.find((user) => user._id === action.payload)
+      if (foundUser) {
+        foundUser.isBanned = false
+      }
+    })
+
+    builder.addMatcher(
+      (action) => action.type.endsWith('/pending'),
+      (state) => {
         state.isLoading = true
         state.error = null
-      })
-
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      }
+    )
+    builder.addMatcher(
+      (action) => action.type.endsWith('/rejected'),
+      (state, action) => {
         state.isLoading = false
-        state.users = action.payload
-      })
-
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = 'Failed to fetch data'
-      })
+        state.error = action.error.message || 'an error occured'
+      }
+    )
   }
 })
-export const { login, logout, updateUser } = usersReducer.actions
+export const { login, logout, updateUser, addUser } = usersReducer.actions
 export default usersReducer.reducer

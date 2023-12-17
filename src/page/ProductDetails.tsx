@@ -39,18 +39,18 @@ export const SingleProduct = () => {
     <div className="">
       <div className="centered-content">
         {singlePoduct && (
-          <article key={singlePoduct.id} className="product">
+          <article key={singlePoduct._id} className="product">
             <div className="product-card">
-              <img src={singlePoduct.image} alt={singlePoduct.name} width="500" height="300" />
-              <h3 className="product-title">{singlePoduct.name}</h3>
+              <img src={singlePoduct.image} alt={singlePoduct.title} width="500" height="300" />
+              <h3 className="product-title">{singlePoduct.title}</h3>
               <p className="product-description">{singlePoduct.description}</p>
-              <p className="product-description">
+              {/* <p className="product-description">
                 {singlePoduct.variants && singlePoduct.variants.join(' - ')}
               </p>
               <p className="product-description">
-                {singlePoduct.categories &&
+                {singlePoduct.categorices &&
                   singlePoduct.categories.map((categoryId) => getCategoryNameById(categoryId))}
-              </p>
+              </p> */}
               <h3 className="product-title">{singlePoduct.price} SAR</h3>
               <br></br>
               <button
