@@ -4,56 +4,37 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { AppDispatch, RootState } from '../redux/store'
-import { fetchUsers, login } from '../redux/slices/users/userSlice'
-import axios from 'axios'
-import { baseUrl } from '../services/UserService'
+import { fetchUsers, loginUser } from '../redux/slices/users/userSlice'
 
-const Login = ({ pathName }: { pathName: string }) => {
+const Login = ({ pathName = '' }: { pathName: string }) => {
+  const { users, userData } = useSelector((state: RootState) => state.usersReducer)
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-
-  const { users } = useSelector((state: RootState) => state.usersReducer)
   const [user, setUser] = useState({
     email: '',
     password: ''
   })
 
-  useEffect(() => {
-    dispatch(fetchUsers())
-  }, [dispatch])
-
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
     setUser((prevState) => {
-      return { ...prevState, [name]: value }
+      return { ...prevState, [event.target.name]: event.target.value }
     })
   }
+
+  useEffect(() => {
+    if (userData) {
+      navigate(
+        pathName ? pathName : `/dashboard/${userData && userData.isAdmin ? 'admin' : 'user'}`
+      )
+    }
+  }, [userData, navigate, pathName])
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     try {
-      await axios.post(`${baseUrl}/auth/login`, user)
-      navigate(`/`)
-      // const foundUser = users.find((userData) => userData.email === user.email)
-
-      // if (!foundUser) {
-      //   toast.error('User not found')
-      //   return
-      // }
-      // if (foundUser.password != user.password) {
-      //   toast.error('Password does not match')
-      //   return
-      // }
-      // if (foundUser.isBanned) {
-      //   toast.error('You are blocked')
-      //   return
-      // }
-
-      // if (foundUser && foundUser.password === user.password) {
-      //   dispatch(login(foundUser))
-      //   navigate(pathName ? pathName : `/dashboard/${foundUser.role}`)
-      // } else {
-      //   toast.error('somthing wrong ')
-      // }
+      dispatch(loginUser(user))
+      // toast.success('Successful login')
+      // navigate(`/dashboard/${userData?.isAdmin ? 'admin' : 'user'}`)
     } catch (error) {
       console.log(error)
     }

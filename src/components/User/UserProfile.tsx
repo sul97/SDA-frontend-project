@@ -1,7 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { updateUser } from '../../redux/slices/users/userSlice'
 import { AppDispatch, RootState } from '../../redux/store'
 
 import UserSidebar from './UserSidebar'
@@ -12,12 +11,10 @@ const UserProfile = () => {
 
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [user, setUser] = useState({
-    firstName: userData?.firstName || '',
-    lastName: userData?.lastName || ''
+    name: userData?.name
   })
 
   const [firstNameError, setFirstNameError] = useState('')
-  const [lastNameError, setLastNameError] = useState('')
 
   const handleFormOpen = () => {
     setIsFormOpen(!isFormOpen)
@@ -32,23 +29,18 @@ const UserProfile = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    let isValid = true
+    // let isValid = true
 
-    if (user.firstName.length < 2) {
-      setFirstNameError('First name must be at least 2 characters')
-      isValid = false
-    }
+    // if (user.name.length < 2) {
+    //   setFirstNameError('First name must be at least 2 characters')
+    //   isValid = false
+    // }
 
-    if (user.lastName.length < 2) {
-      setLastNameError('Last name must be at least 2 characters')
-      isValid = false
-    }
-
-    if (!isValid) {
-      return
-    }
-    const updatUserData = { id: userData?.id, ...user }
-    dispatch(updateUser(updatUserData))
+    // if (!isValid) {
+    //   return
+    // }
+    // const updatUserData = { id: userData?._id, ...user }
+    // dispatch(updateUser(updatUserData))
   }
   return (
     <div className="container">
@@ -59,9 +51,9 @@ const UserProfile = () => {
             {userData && (
               <div className="product">
                 <br></br>
-                <p className="user-name">{`${userData.firstName} ${userData.lastName}`}</p>
+                <p className="user-name">{`${userData?.name}`}</p>
                 <br></br>
-                <p className="user-email">{`${userData.email}`}</p>
+                <p className="user-email">{`${userData?.email}`}</p>
                 <br></br>
                 <div className="center-button">
                   <button
@@ -77,23 +69,14 @@ const UserProfile = () => {
                       <label>firstName</label>
                       <input
                         type="text"
-                        name="firstName"
+                        name="name"
                         className="input-product "
-                        value={user.firstName}
+                        value={user.name}
                         onChange={handleChange}
                         required
                       />
                       <p>{firstNameError}</p>
-                      <label>lastName</label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        className="input-product"
-                        value={user.lastName}
-                        onChange={handleChange}
-                        required
-                      />
-                      <p>{lastNameError}</p>
+
                       <br></br>
                       <button className="px-10 text-black-50 bg-gray-200 rounded-lg hover:bg-pink-100 show-more-button">
                         Update

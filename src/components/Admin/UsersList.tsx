@@ -2,11 +2,16 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { banUser, unbanUser, deleteUser, fetchUsers } from '../../redux/slices/users/userSlice'
+import {
+  banUser,
+  unbanUser,
+  deleteUser,
+  fetchUsers,
+  clearError
+} from '../../redux/slices/users/userSlice'
 import { RootState, AppDispatch } from '../../redux/store'
 
 import AdminSidebar from './AdminSidebar'
-import { baseUrl } from '../../services/UserService'
 
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -16,6 +21,19 @@ const UsersList = () => {
     dispatch(fetchUsers())
   }, [dispatch])
 
+  useEffect(() => {
+    if (error) {
+      const toastId = toast.error(error, {
+        onClose: () => {
+          dispatch(clearError())
+        }
+      })
+      setTimeout(() => {
+        toast.dismiss(toastId)
+      }, 1000)
+    }
+  }, [error])
+
   // if (isLoading) {
   //   return <p>Loading the data...</p>
   // }
@@ -23,13 +41,8 @@ const UsersList = () => {
   //   return <p>{error}</p>
   // }
   const handleDelete = async (id: string) => {
-    try {
-      dispatch(deleteUser(id))
-      // dispatch(fetchUsers())
-      toast.success('Successful Delete User')
-    } catch (error) {
-      toast.error('Error deleting')
-    }
+    await dispatch(deleteUser(id))
+    toast.success('Successful Delete User')
   }
   const handleBlockAndUnBlock = async (id: string, isBanned: boolean) => {
     try {

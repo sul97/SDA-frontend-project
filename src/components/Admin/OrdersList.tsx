@@ -22,12 +22,12 @@ const OrdersList = () => {
   if (error) {
     return <p>{error}</p>
   }
-  const getProductNameById = (producttId: number) => {
-    const product = items.find((product) => product.id == producttId)
-    return product ? product.name : ''
+  const getProductNameById = (producttId: string) => {
+    const product = items.find((product) => product._id == producttId)
+    return product ? product.title : ''
   }
-  const getUserNameById = (userId: number) => {
-    const user = users.find((user) => user.id === userId)
+  const getUserNameById = (userId: string) => {
+    const user = users.find((user) => user._id === userId)
     return user ? user.name : '- User -'
   }
   return (

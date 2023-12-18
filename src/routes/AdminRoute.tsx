@@ -7,7 +7,7 @@ import Login from '../page/Login'
 const AdminRoute = () => {
   const location = useLocation()
   const { isLoggedIn, userData } = useSelector((state: RootState) => state.usersReducer)
-  return isLoggedIn && userData.role === 'admin' ? (
+  return isLoggedIn && userData?.isAdmin === true ? (
     <Outlet />
   ) : (
     <Login pathName={location.pathname} />

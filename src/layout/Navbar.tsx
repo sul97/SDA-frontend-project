@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { AppDispatch, RootState } from '../redux/store'
 
-import { logout } from '../redux/slices/users/userSlice'
+import { logoutUser } from '../redux/slices/users/userSlice'
 
 import CartIcon from '../components/CartIcon'
 
@@ -12,7 +12,7 @@ const Navbar = () => {
   const { cartItems } = useSelector((state: RootState) => state.cartReducer)
 
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(logoutUser())
   }
   return (
     <div className="nav">
@@ -36,7 +36,9 @@ const Navbar = () => {
                 <Link to="/contact">Contact</Link>
               </li>
               <li>
-                <Link to={`/dashboard/${userData.role}`}>{userData.role} Dashboard</Link>
+                <Link to={`/dashboard/${userData && userData.isAdmin ? 'admin' : 'user'}`}>
+                  {userData && userData.isAdmin ? 'admin' : 'user'} Dashboard
+                </Link>
               </li>
               <li>
                 <Link to="/cart">
