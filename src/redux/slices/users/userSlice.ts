@@ -92,10 +92,10 @@ export const usersReducer = createSlice({
       state.users.push(action.payload)
     },
     updateUser: (state, action) => {
-      const { id, firstName } = action.payload
+      const { id, name } = action.payload
       const foundUser = state.users.find((user) => user._id == id)
       if (foundUser) {
-        foundUser.name = firstName
+        foundUser.name = name
 
         state.userData = foundUser
         localStorage.setItem(
@@ -114,7 +114,7 @@ export const usersReducer = createSlice({
       state.isLoading = false
     })
     builder.addCase(deleteUser.fulfilled, (state, action) => {
-      state.users = state.users.filter((user) => user._id === action.payload)
+      state.users = state.users.filter((user) => user._id !== action.payload)
       state.isLoading = false
     })
     builder.addCase(banUser.fulfilled, (state, action) => {

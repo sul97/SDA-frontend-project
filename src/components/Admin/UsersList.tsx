@@ -25,7 +25,7 @@ const UsersList = () => {
   const handleDelete = async (id: string) => {
     try {
       dispatch(deleteUser(id))
-      dispatch(fetchUsers())
+      // dispatch(fetchUsers())
       toast.success('Successful Delete User')
     } catch (error) {
       toast.error('Error deleting')
@@ -53,7 +53,7 @@ const UsersList = () => {
                     return (
                       <article key={user._id} className="product">
                         <div className="product-card">
-                          <img src={`${baseUrl}/${user.image}`} alt={user.image} />
+                          <img src={user.image} alt={user.image} />
                           <h3 className="product-title">{user.name}</h3>
                           <p className="product-description">{user.email}</p>
                           {/* <p className="product-description">{user.role}</p> */}

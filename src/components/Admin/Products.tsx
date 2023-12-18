@@ -3,27 +3,25 @@ import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, AppDispatch } from '../../redux/store'
 
-import {
-  addNewProduct,
-  deleteProduct,
-  fetchData,
-  updateProduct
-} from '../../redux/slices/products/productsSlice'
+import { createProduct, deleteproduct, fetchData } from '../../redux/slices/products/productsSlice'
 
 import AdminSidebar from './AdminSidebar'
+import { baseUrl } from '../../services/UserService'
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { items, isLoading, error } = useSelector((state: RootState) => state.productsReducer)
   const [productEdit, setProductEdit] = useState(false)
-  const [productId, setProductId] = useState(0)
+  const [productId, setProductId] = useState('')
   const [product, setProduct] = useState({
-    name: '',
+    title: '',
+    slug: '',
     image: '',
     description: '',
-    categories: [0],
-    variants: [''],
-    sizes: [''],
+    category: '',
+    quantity: 0,
+    sold: 0,
+    shipping: 0,
     price: 0
   })
   const [productNameError, setProductNameError] = useState('')
@@ -38,20 +36,21 @@ const Products = () => {
     dispatch(fetchData())
   }, [dispatch])
 
-  if (isLoading) {
-    return <p>Loading the data...</p>
-  }
-  if (error) {
-    return <p>{error}</p>
-  }
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  // if (isLoading) {
+  //   return <p>Loading the data...</p>
+  // }
+  // if (error) {
+  //   return <p>{error}</p>
+  // }
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target
 
-    const isList = name === 'categories' || name === 'variants' || name === 'sizes'
-    if (isList) {
+    if (event.target.type === 'file') {
+      const fileInput = (event.target as HTMLInputElement) || ''
+
       setProduct({
         ...product,
-        [name]: value.split(',')
+        [event.target.name]: fileInput.files?.[0]
       })
       return
     }
@@ -64,97 +63,115 @@ const Products = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    let isValid = true
+    // let isValid = true
 
-    if (product.name.length < 2) {
-      setProductNameError('Product name  must be at least 3 characters')
-      isValid = false
-    }
+    // if (product.name.length < 2) {
+    //   setProductNameError('Product name  must be at least 3 characters')
+    //   isValid = false
+    // }
 
-    if (product.description.length < 5) {
-      setDescriptionError('Description must be at least 5 characters')
-      isValid = false
-    }
+    // if (product.description.length < 5) {
+    //   setDescriptionError('Description must be at least 5 characters')
+    //   isValid = false
+    // }
 
-    if (product.categories.length === 0) {
-      setCategoriesError(['At least one category is required'])
-      isValid = false
-    }
+    // if (product.categories.length === 0) {
+    //   setCategoriesError(['At least one category is required'])
+    //   isValid = false
+    // }
 
-    if (product.variants.length === 0) {
-      setVariantsError(['At least one variant is required'])
-      isValid = false
-    }
+    // if (product.variants.length === 0) {
+    //   setVariantsError(['At least one variant is required'])
+    //   isValid = false
+    // }
 
-    if (product.sizes.length === 0) {
-      setSizesError(['At least one size is required'])
-      isValid = false
-    }
+    // if (product.sizes.length === 0) {
+    //   setSizesError(['At least one size is required'])
+    //   isValid = false
+    // }
 
-    if (product.price <= 0) {
-      setPriceError(0)
-      setPriceErrorMessage('Price must be a positive number')
-      isValid = false
-    }
+    // if (product.price <= 0) {
+    //   setPriceError(0)
+    //   setPriceErrorMessage('Price must be a positive number')
+    //   isValid = false
+    // }
 
-    if (!isValid) {
-      return
-    }
-    if (!productEdit) {
-      const newProduct = { id: new Date().getTime(), ...product }
-      dispatch(addNewProduct(newProduct))
-      toast.success('Successful Add Product')
-    } else {
-      const updateProducts = {
-        id: productId,
-        name: product.name,
-        image: product.image,
-        description: product.description,
-        categories: product.categories,
-        variants: product.variants,
-        sizes: product.sizes,
-        price: product.price
-      }
-      dispatch(updateProduct(updateProducts))
-      toast.success('Successful Update Product')
-    }
+    // if (!isValid) {
+    //   return
+    // }
+    // if (!productEdit) {
+    const formData = new FormData()
+    formData.append('title', product.title)
+    formData.append('price', product.price.toString())
+    formData.append('image', product.image)
+    formData.append('category', product.category.toString())
+    formData.append('description', product.description)
+    formData.append('quantity', product.quantity.toString())
+    formData.append('sold', product.sold.toString())
+    formData.append('shipping', product.shipping.toString())
+    dispatch(createProduct(formData))
+    toast.success('Successful Add Product')
   }
-  const handleEdit = (
-    id: number,
-    name: string,
-    image: string,
-    description: string,
-    categories: number[],
-    variants: string[],
-    sizes: string[],
-    price: number
-  ) => {
-    setProductId(id)
-    setProductEdit(!productEdit)
-    if (!productEdit) {
-      setProduct({
-        name,
-        image,
-        description,
-        categories,
-        variants,
-        sizes,
-        price
-      })
-    } else {
-      setProduct({
-        name: '',
-        image: '',
-        description: '',
-        categories: [],
-        variants: [],
-        sizes: [],
-        price: 0
-      })
-    }
-  }
-  const handleDeleteProduct = (id: number) => {
-    dispatch(deleteProduct(id))
+  //   } else {
+  //     const updateProducts = {
+  //       _id: productId,
+  //       title: product.title,
+  //       slug: product.slug,
+  //       image: product.image,
+  //       description: product.description,
+  //       category: product.category,
+  //       quantity: product.quantity,
+  //       sold: product.sold,
+  //       shipping: product.shipping,
+  //       price: product.price
+  //     }
+  //     dispatch(updateProduct(updateProducts))
+  //     toast.success('Successful Update Product')
+  //   }
+  // }
+  // const handleEdit = (
+  //   _id: string,
+  //   slug: string,
+  //   title: string,
+  //   image: string,
+  //   description: string,
+  //   category: string,
+  //   quantity: number,
+  //   sold: number,
+  //   shipping: number,
+  //   price: number
+  // ) => {
+  //   setProductId(_id)
+  //   setProductEdit(!productEdit)
+  //   if (!productEdit) {
+  //     setProduct({
+  //       title,
+  //       slug,
+  //       image,
+  //       description,
+  //       category,
+  //       quantity,
+  //       sold,
+  //       shipping,
+  //       price
+  //     })
+  //   } else {
+  //     setProduct({
+  //       title: '',
+  //       slug: slug,
+  //       image: '',
+  //       description: '',
+  //       category: '',
+  //       quantity: 0,
+  //       sold: 0,
+  //       shipping: 0,
+  //       price: 0
+  //     })
+  //   }
+  // }
+
+  const handleDeleteProduct = (slug: string) => {
+    dispatch(deleteproduct(slug))
   }
   const labelStyle = 'block text-sm font-medium text-gray-800'
   return (
@@ -168,33 +185,19 @@ const Products = () => {
               <h1 className="text-center">Add a new product</h1>
               <form onSubmit={handleSubmit} className="product-card">
                 <div className="mb-4">
-                  <label htmlFor="name" className={labelStyle}>
-                    Name:
+                  <label htmlFor="title" className={labelStyle}>
+                    title:
                   </label>
                   <input
                     type="text"
-                    name="name"
-                    id="name"
+                    name="title"
+                    id="title"
                     className="input-product"
-                    value={product.name}
+                    value={product.title}
                     onChange={handleChange}
                     required
                   />
                   <p>{productNameError}</p>
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="image" className={labelStyle}>
-                    Image URL:
-                  </label>
-                  <input
-                    type="text"
-                    name="image"
-                    id="image"
-                    value={product.image}
-                    onChange={handleChange}
-                    className="input-product"
-                    required
-                  />
                 </div>
                 <div className="mb-4">
                   <label htmlFor="description" className={labelStyle}>
@@ -211,14 +214,14 @@ const Products = () => {
                   <p>{descriptionError}</p>
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="categories" className={labelStyle}>
+                  <label htmlFor="category" className={labelStyle}>
                     Categories: (use comma , to create multiple)
                   </label>
                   <input
                     type="text"
-                    name="categories"
-                    id="categories"
-                    value={product.categories.join(' - ')}
+                    name="category"
+                    id="category"
+                    value={product.category}
                     onChange={handleChange}
                     className="input-product"
                     required
@@ -226,37 +229,52 @@ const Products = () => {
                   <p>{categoriesError}</p>
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="variants" className={labelStyle}>
-                    Variants: (use comma , to create multiple)
+                  <label htmlFor="quantity" className={labelStyle}>
+                    quantity: (use comma , to create multiple)
                   </label>
                   <input
                     type="text"
-                    name="variants"
-                    id="variants"
-                    value={product.variants.join(' - ')}
+                    name="quantity"
+                    id="quantity"
+                    value={product.quantity}
                     onChange={handleChange}
                     className="input-product"
                     required
                   />
-                  <p>{variantsError}</p>
+                  {/* <p>{variantsError}</p> */}
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="sizes" className={labelStyle}>
-                    Sizes: (use comma , to create multiple)
+                  <label htmlFor="sold" className={labelStyle}>
+                    sold: (use comma , to create multiple)
                   </label>
                   <input
                     type="text"
-                    name="sizes"
-                    id="sizes"
-                    value={product.sizes.join(' - ')}
+                    name="sold"
+                    id="sold"
+                    value={product.sold}
                     onChange={handleChange}
                     className="input-product"
                     required
                   />
-                  <p>{sizesError}</p>
+                  {/* <p>{sizesError}</p> */}
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="sizes" className={labelStyle}>
+                  <label htmlFor="shipping" className={labelStyle}>
+                    shipping:
+                  </label>
+                  <input
+                    type="text"
+                    name="shipping"
+                    id="shipping"
+                    value={product.shipping}
+                    onChange={handleChange}
+                    className="input-product"
+                    required
+                  />
+                  <p>{priceErrorMessage}</p>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="price" className={labelStyle}>
                     Price:
                   </label>
                   <input
@@ -270,6 +288,19 @@ const Products = () => {
                   />
                   <p>{priceErrorMessage}</p>
                 </div>
+                <div className="mb-4">
+                  <label htmlFor="image" className={labelStyle}>
+                    Image URL:
+                  </label>
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className="input-group__input"
+                    required
+                  />
+                </div>
                 <button type="submit" className="product-button text-blue-900 bg-gray-300 ">
                   {productEdit ? 'Update' : 'Add Product +'}
                 </button>
@@ -280,35 +311,37 @@ const Products = () => {
             {items.length > 0 &&
               items.map((items) => {
                 return (
-                  <article key={items.id} className="product">
+                  <article key={items._id} className="product">
                     <div className="product-card">
-                      <img src={items.image} alt={items.name} width="300" />
-                      <h3 className="product-title">{items.name}</h3>
+                      <img src={`${baseUrl}/${items.image}`} alt={items.title} width="300" />
+                      <h3 className="product-title">{items.title}</h3>
                       <p className="product-description">{items.description}</p>
-                      <p className="product-description">{items.variants}</p>
-                      <p className="product-description">{items.categories}</p>
-                      <p className="product-description">{items.sizes}</p>
+                      <p className="product-description">{items.shipping}</p>
+                      <p className="product-description">{items.sold}</p>
+                      <p className="product-description">{items.quantity}</p>
                       <h3 className="product-title">{items.price} SAR</h3>
-                      <button
+                      {/* <button
                         className="text-green-800 product-button"
                         onClick={() => {
                           handleEdit(
-                            items.id,
-                            items.name,
+                            items._id,
+                            items.slug,
+                            items.title,
                             items.image,
                             items.description,
-                            items.categories,
-                            items.variants,
-                            items.sizes,
+                            items.category,
+                            items.quantity,
+                            items.sold,
+                            items.shipping,
                             items.price
                           )
                         }}>
                         Edit
-                      </button>
+                      </button> */}
                       <button
                         className="text-red-500 product-button show-more-button"
                         onClick={() => {
-                          handleDeleteProduct(items.id)
+                          handleDeleteProduct(items.slug)
                         }}>
                         Delete
                       </button>

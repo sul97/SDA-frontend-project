@@ -25,12 +25,12 @@ const Home = () => {
     dispatch(fetchData())
   }, [dispatch])
 
-  if (isLoading) {
-    return <p>Loading the data...</p>
-  }
-  if (error) {
-    return <p>{error}</p>
-  }
+  // if (isLoading) {
+  //   return <p>Loading the data...</p>
+  // }
+  // if (error) {
+  //   return <p>{error}</p>
+  // }
 
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart(product))
