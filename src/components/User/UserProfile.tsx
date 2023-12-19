@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../redux/store'
 
 import UserSidebar from './UserSidebar'
+import { updateUser } from '../../redux/slices/users/userSlice'
 
 const UserProfile = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -39,8 +40,8 @@ const UserProfile = () => {
     // if (!isValid) {
     //   return
     // }
-    // const updatUserData = { id: userData?._id, ...user }
-    // dispatch(updateUser(updatUserData))
+    const updatUserData = { _id: userData?._id, ...user }
+    dispatch(updateUser(updatUserData))
   }
   return (
     <div className="container">

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../redux/store'
 
 import AdminSidebar from './AdminSidebar'
+import { updateUser } from '../../redux/slices/users/userSlice'
 
 const AdminDashboard = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
+    console.log(user)
     // let isValid = true
 
     // if (user.firstName.length < 2) {
@@ -35,8 +37,8 @@ const AdminDashboard = () => {
     // if (!isValid) {
     //   return
     // }
-    // const updatUserData = { _id: userData?._id, ...user }
-    // dispatch(updateUser(updatUserData))
+    const updatUserData = { _id: userData?._id, ...user }
+    dispatch(updateUser(updatUserData))
   }
   return (
     <div className="container">

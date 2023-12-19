@@ -15,7 +15,7 @@ const ActivatePage = () => {
       const response = await activateUser(String(token))
       toast.success(`${response.message}`)
       navigate('/login')
-    } catch (error) {
+    } catch (error: any) {
       toast.error(`${error.response.data.message}`)
     }
   }

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
+
 axios.defaults.withCredentials = true
 
 import { baseUrl } from '../../../services/UserService'
@@ -49,7 +50,7 @@ export const deleteUser = createAsyncThunk(
     try {
       await axios.delete<User[]>(`${baseUrl}/users/${id}`)
       return id
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.response.data.message)
     }
   }
@@ -73,6 +74,23 @@ export const logoutUser = createAsyncThunk('users/logoutUser', async () => {
   return response.data
 })
 
+export const updateUser = createAsyncThunk('users/updateUser', async (userData: object) => {
+  await axios.put(`${baseUrl}/users/${userData._id}`, userData)
+  return userData
+})
+export const forgetPassword = createAsyncThunk('users/forgetPassword', async (email: string) => {
+  const response = await axios.post(`${baseUrl}/users/forget-password`, { email: email })
+  return response.data
+})
+
+export const restPassword = createAsyncThunk('users/restPassword', async (data: object) => {
+  const response = await axios.post(`${baseUrl}/users//reset-password`, {
+    password: data.password,
+    token: data.token
+  })
+  return response.data
+})
+
 export const usersReducer = createSlice({
   name: 'users',
   initialState,
@@ -80,21 +98,6 @@ export const usersReducer = createSlice({
     clearError: (state) => {
       state.error = null
     }
-    // updateUser: (state, action) => {
-    //   const { id, name } = action.payload
-    //   const foundUser = state.users.find((user) => user._id === id)
-    //   if (foundUser) {
-    //     foundUser.name = name
-    //     state.userData = foundUser
-    //     localStorage.setItem(
-    //       'loginData',
-    //       JSON.stringify({
-    //         isLoggedIn: state.isLoggedIn,
-    //         userData: state.userData
-    //       })
-    //     )
-    //   }
-    // }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
@@ -143,6 +146,18 @@ export const usersReducer = createSlice({
           userData: state.userData
         })
       )
+    })
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      if (state.userData) {
+        state.userData.name = action.payload.name
+        localStorage.setItem(
+          'loginData',
+          JSON.stringify({
+            isLoggedIn: state.isLoggedIn,
+            userData: state.userData
+          })
+        )
+      }
     })
     builder.addMatcher(
       (action) => action.type.endsWith('/pending'),

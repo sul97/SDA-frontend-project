@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { AppDispatch, RootState } from '../redux/store'
@@ -77,6 +78,9 @@ const Login = ({ pathName = '' }: { pathName: string }) => {
             className="login-button text-black-50 bg-gray-300 rounded-lg hover:bg-pink-100">
             Login
           </button>
+          <br></br>
+          <br></br>
+          <Link to="/forget-password">forget password?</Link>
         </div>
       </form>
     </div>

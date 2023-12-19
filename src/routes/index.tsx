@@ -19,6 +19,8 @@ import OrdersList from '../components/Admin/OrdersList'
 import UserOrders from '../components/User/UserOrders'
 import Cart from '../page/Cart'
 import ActivatePage from '../components/User/ActivatePage'
+import ForgetPassWord from '../page/ForgetPassWord'
+import ActivatePasswordPage from '../page/ActivatePasswordPage'
 
 export const Index = () => {
   return (
@@ -26,6 +28,8 @@ export const Index = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/forget-password" element={<ForgetPassWord />}></Route>
+        <Route path="/users/rest-password/:token" element={<ActivatePasswordPage />} />
         <Route path="/login" element={<Login pathName="" />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
