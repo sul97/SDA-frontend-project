@@ -1,9 +1,9 @@
 import React from 'react'
 import jwtDecode from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
-import { activateUser } from '../../services/UserService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { activateUser } from '../../redux/slices/users/userSlice'
 
 const ActivatePage = () => {
   const navigate = useNavigate()

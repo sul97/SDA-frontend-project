@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { AppDispatch } from '../redux/store'
-import { createUser } from '../services/UserService'
+import { createUser } from '../redux/slices/users/userSlice'
 
 const Register = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -65,7 +65,7 @@ const Register = () => {
     try {
       const response = await createUser(formData)
       toast.success(`${response.message}`)
-    } catch (error) {
+    } catch (error: any) {
       toast.error(`Error adding user ${error.response.data.message}`)
     }
   }

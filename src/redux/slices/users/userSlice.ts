@@ -3,7 +3,7 @@ import axios from 'axios'
 
 axios.defaults.withCredentials = true
 
-import { baseUrl } from '../../../services/UserService'
+const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 import { toast } from 'react-toastify'
 
 export type User = {
@@ -41,14 +41,14 @@ const initialState: UsersState = {
 }
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  const response = await axios.get(`${baseUrl}/users`)
+  const response = await axios.get<User[]>(`${API_BASE_URL}/users`)
   return response.data
 })
 export const deleteUser = createAsyncThunk(
   'users/deleteUser',
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete<User[]>(`${baseUrl}/users/${id}`)
+      await axios.delete<User[]>(`${API_BASE_URL}/users/${id}`)
       return id
     } catch (error: any) {
       return rejectWithValue(error.response.data.message)
@@ -56,35 +56,44 @@ export const deleteUser = createAsyncThunk(
   }
 )
 export const banUser = createAsyncThunk('users/banUser', async (id: string) => {
-  await axios.put<User[]>(`${baseUrl}/users/ban/${id}`)
+  await axios.put<User[]>(`${API_BASE_URL}/users/ban/${id}`)
   return id
 })
 export const unbanUser = createAsyncThunk('users/unbanUser', async (id: string) => {
-  await axios.put<User[]>(`${baseUrl}/users/unban/${id}`)
+  await axios.put<User[]>(`${API_BASE_URL}/users/unban/${id}`)
   return id
 })
 
+export const createUser = async (newUser: FormData) => {
+  const response = await axios.post(`${API_BASE_URL}/users/process-register`, newUser)
+  return response.data
+}
+
+export const activateUser = async (token: string) => {
+  const response = await axios.post(`${API_BASE_URL}/users/activate`, { token })
+  return response.data
+}
 export const loginUser = createAsyncThunk('users/loginUser', async (user: object) => {
-  const response = await axios.post(`${baseUrl}/auth/login`, user)
+  const response = await axios.post(`${API_BASE_URL}/auth/login`, user)
   toast.success(response.data.message)
   return response.data
 })
 export const logoutUser = createAsyncThunk('users/logoutUser', async () => {
-  const response = await axios.post(`${baseUrl}/auth/logout`)
+  const response = await axios.post(`${API_BASE_URL}/auth/logout`)
   return response.data
 })
 
-export const updateUser = createAsyncThunk('users/updateUser', async (userData: object) => {
-  await axios.put(`${baseUrl}/users/${userData._id}`, userData)
+export const updateUser = createAsyncThunk('users/updateUser', async (userData: Partial<User>) => {
+  await axios.put(`${API_BASE_URL}/users/${userData._id}`, userData)
   return userData
 })
 export const forgetPassword = createAsyncThunk('users/forgetPassword', async (email: string) => {
-  const response = await axios.post(`${baseUrl}/users/forget-password`, { email: email })
+  const response = await axios.post(`${API_BASE_URL}/users/forget-password`, { email: email })
   return response.data
 })
 
-export const restPassword = createAsyncThunk('users/restPassword', async (data: object) => {
-  const response = await axios.post(`${baseUrl}/users//reset-password`, {
+export const restPassword = createAsyncThunk('users/restPassword', async (data: Partial<User>) => {
+  const response = await axios.post(`${API_BASE_URL}/users//reset-password`, {
     password: data.password,
     token: data.token
   })
@@ -101,7 +110,6 @@ export const usersReducer = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      console.log(action.payload)
       state.users = action.payload.payload.users
       state.isLoading = false
     })

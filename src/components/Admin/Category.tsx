@@ -7,7 +7,7 @@ import {
   updateCategory,
   deletetCategory,
   fetchCategory,
-  addCategory
+  createCategory
 } from '../../redux/slices/categories/categorySlice'
 
 import AdminSidebar from './AdminSidebar'
@@ -17,19 +17,19 @@ const Category = () => {
   const { categories, isLoading, error } = useSelector((state: RootState) => state.categoryReducer)
   const [category, setCategory] = useState('')
   const [categoryEdit, setCategoryEdit] = useState(false)
-  const [categoryId, setCategoryId] = useState(0)
+  const [categoryId, setCategoryId] = useState('')
   const [categoryNameError, setCategoryNameError] = useState('')
 
   useEffect(() => {
     dispatch(fetchCategory())
   }, [dispatch])
 
-  if (isLoading) {
-    return <p>Loading the data...</p>
-  }
-  if (error) {
-    return <p>{error}</p>
-  }
+  // if (isLoading) {
+  //   return <p>Loading the data...</p>
+  // }
+  // if (error) {
+  //   return <p>{error}</p>
+  // }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCategory(event.target.value)
@@ -49,28 +49,25 @@ const Category = () => {
       return
     }
     if (!categoryEdit) {
-      const newCategory = { id: new Date().getTime(), name: category }
-      dispatch(addCategory(newCategory))
+      dispatch(createCategory(category))
+      setCategory('')
       toast.success('Successful Add Category')
     } else {
-      const updateCategoryName = { id: categoryId, name: category }
-      dispatch(updateCategory(updateCategoryName))
+      dispatch(updateCategory({ _id: categoryId, name: category }))
+      setCategory('')
+      setCategoryEdit(false)
       toast.success('Successful Update Category')
     }
   }
 
-  const handleEdit = (id: number, name: string) => {
-    setCategoryId(id)
+  const handleEdit = (_id: string, name: string) => {
+    setCategoryId(_id)
     setCategoryEdit(!categoryEdit)
-    if (!categoryEdit) {
-      setCategory(name)
-    } else {
-      setCategory('')
-    }
+    setCategory(categoryEdit ? '' : name)
   }
 
-  const handleDeleteCategory = (id: number) => {
-    dispatch(deletetCategory(id))
+  const handleDeleteCategory = (_id: string) => {
+    dispatch(deletetCategory(_id))
   }
 
   return (
@@ -108,21 +105,21 @@ const Category = () => {
             {categories.length > 0 &&
               categories.map((category) => {
                 return (
-                  <article key={category.id} className="product">
+                  <article key={category._id} className="product">
                     <div className="product-card">
                       <h3 className="product-title">{category.name}</h3>
                       <br></br>
                       <button
                         className="text-green-800 product-button"
                         onClick={() => {
-                          handleEdit(category.id, category.name)
+                          handleEdit(category._id, category.name)
                         }}>
                         Edit
                       </button>
                       <button
                         className="text-red-400 product-button show-more-button"
                         onClick={() => {
-                          handleDeleteCategory(category.id)
+                          handleDeleteCategory(category._id)
                         }}>
                         Delete
                       </button>

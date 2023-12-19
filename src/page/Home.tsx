@@ -8,7 +8,7 @@ import { fetchData, searchProduct, Product } from '../redux/slices/products/prod
 import { addToCart } from '../redux/slices/cart/cartSlice'
 
 import SortProduct from '../components/SortProduct'
-import { baseUrl } from '../services/UserService'
+const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -116,7 +116,7 @@ const Home = () => {
             return (
               <article key={_id} className="product">
                 <div className="product-card">
-                  <img src={`${baseUrl}/${image}`} alt={title} />
+                  <img src={`${API_BASE_URL}/${image}`} alt={title} />
                   <h1 className="product-title">{title}</h1>
                   <h2 className="product-description">{price} SAR</h2>
                   <button

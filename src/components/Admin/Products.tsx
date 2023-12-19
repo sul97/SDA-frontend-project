@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from '../../redux/store'
 import { createProduct, deleteproduct, fetchData } from '../../redux/slices/products/productsSlice'
 
 import AdminSidebar from './AdminSidebar'
-import { baseUrl } from '../../services/UserService'
+const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -313,7 +313,7 @@ const Products = () => {
                 return (
                   <article key={items._id} className="product">
                     <div className="product-card">
-                      <img src={`${baseUrl}/${items.image}`} alt={items.title} width="300" />
+                      <img src={`${API_BASE_URL}/${items.image}`} alt={items.title} width="300" />
                       <h3 className="product-title">{items.title}</h3>
                       <p className="product-description">{items.description}</p>
                       <p className="product-description">{items.shipping}</p>
