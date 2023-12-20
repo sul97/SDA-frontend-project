@@ -16,7 +16,7 @@ const Home = () => {
     (state: RootState) => state.productsReducer
   )
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
-  const [selectCategory, setSelectCategory] = useState<number | ''>('')
+  const [selectCategory, setSelectCategory] = useState<string | ''>('')
 
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(4)
@@ -48,14 +48,14 @@ const Home = () => {
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedCategory = event.target.value
-    setSelectCategory(selectedCategory === '' ? '' : Number(selectedCategory))
+    setSelectCategory(selectedCategory === '' ? '' : String(selectedCategory))
   }
 
-  const filterProductsByCategory = (products: Product[], category: number | '') => {
+  const filterProductsByCategory = (products: Product[], category: string | '') => {
     if (category === '') {
       return products
     }
-    return products.filter((product) => product.category.includes(category))
+    return products.filter((product) => product.category._id === category)
   }
 
   const filteredProducts = filterProductsByCategory(filterProducts, selectCategory)
@@ -101,7 +101,7 @@ const Home = () => {
           <select value={selectCategory} onChange={handleCategoryChange}>
             <option value="">All Categories</option>
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>
+              <option key={category._id} value={category._id}>
                 {category.name}
               </option>
             ))}

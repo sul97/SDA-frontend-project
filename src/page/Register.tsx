@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { AppDispatch } from '../redux/store'
@@ -8,7 +8,7 @@ import { createUser } from '../redux/slices/users/userSlice'
 
 const Register = () => {
   const dispatch = useDispatch<AppDispatch>()
-
+  const navigate = useNavigate()
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -65,6 +65,7 @@ const Register = () => {
     try {
       const response = await createUser(formData)
       toast.success(`${response.message}`)
+      navigate('/login')
     } catch (error: any) {
       toast.error(`Error adding user ${error.response.data.message}`)
     }

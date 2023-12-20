@@ -10,7 +10,9 @@ const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { items, isLoading, error } = useSelector((state: RootState) => state.productsReducer)
+  const { items, pagination, isLoading, error } = useSelector(
+    (state: RootState) => state.productsReducer
+  )
   const [productEdit, setProductEdit] = useState(false)
   const [productId, setProductId] = useState('')
   const [product, setProduct] = useState({
@@ -316,9 +318,8 @@ const Products = () => {
                       <img src={`${API_BASE_URL}/${items.image}`} alt={items.title} width="300" />
                       <h3 className="product-title">{items.title}</h3>
                       <p className="product-description">{items.description}</p>
-                      <p className="product-description">{items.shipping}</p>
-                      <p className="product-description">{items.sold}</p>
-                      <p className="product-description">{items.quantity}</p>
+                      <p className="product-description">quantity: {items.quantity}</p>
+                      <p className="product-description">sold: {items.sold}</p>
                       <h3 className="product-title">{items.price} SAR</h3>
                       {/* <button
                         className="text-green-800 product-button"

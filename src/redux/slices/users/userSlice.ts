@@ -44,17 +44,10 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const response = await axios.get<User[]>(`${API_BASE_URL}/users`)
   return response.data
 })
-export const deleteUser = createAsyncThunk(
-  'users/deleteUser',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete<User[]>(`${API_BASE_URL}/users/${id}`)
-      return id
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message)
-    }
-  }
-)
+export const deleteUser = createAsyncThunk('users/deleteUser', async (id: string) => {
+  await axios.delete<User[]>(`${API_BASE_URL}/users/${id}`)
+  return id
+})
 export const banUser = createAsyncThunk('users/banUser', async (id: string) => {
   await axios.put<User[]>(`${API_BASE_URL}/users/ban/${id}`)
   return id

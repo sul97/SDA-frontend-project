@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import api from '../../../api'
 import axios from 'axios'
-import { baseUrl } from '../../../services/UserService'
-
+const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 export type Product = {
   _id?: string
   title: string
@@ -21,6 +19,11 @@ export type Product = {
 export type ProductState = {
   items: Product[]
   error: null | string
+  pagination: {
+    totalProducts: number
+    totalPage: number
+    currentPage: number
+  }
   isLoading: boolean
   searchTerm: string
   singlePoduct: Product
@@ -30,32 +33,31 @@ export type ProductState = {
 const initialState: ProductState = {
   items: [],
   error: null,
+  pagination: {
+    totalProducts: 0,
+    totalPage: 1,
+    currentPage: 1
+  },
   isLoading: false,
   searchTerm: '',
   singlePoduct: {} as Product,
   addedProduct: null
 }
 export const fetchData = createAsyncThunk('products/fetchData', async () => {
-  const response = await axios.get(`http://localhost:5050/products`)
-  return response.data.payload.products
+  const response = await axios.get(`${API_BASE_URL}/products`)
+  return response.data
 })
 
 export const deleteproduct = createAsyncThunk('users/deleteProduct', async (slug: string) => {
-  await axios.delete<Product[]>(`http://localhost:5050/products/${slug}`)
+  await axios.delete(`${API_BASE_URL}/products/${slug}`)
   return slug
 })
-
 export const createProduct = createAsyncThunk(
   'users/createProduct',
   async (newProductData: FormData) => {
-    try {
-      const response = await axios.post(`http://localhost:5050/products/`, newProductData)
-      console.log(response)
-      return response.data.payload
-    } catch (error) {
-      console.error(error)
-      throw error // Rethrow the error to be caught by the rejected case
-    }
+    const response = await axios.post(`${API_BASE_URL}/products`, newProductData)
+    console.log(response)
+    return response.data
   }
 )
 
@@ -123,13 +125,13 @@ export const productsReducer = createSlice({
         state.items.sort((a, b) => a.price - b.price)
       }
     },
-    addNewProduct: (state, action) => {
-      state.items.push(action.payload)
-    },
-    deleteProduct: (state, action) => {
-      const filterProducts = state.items.filter((product) => product._id != action.payload)
-      state.items = filterProducts
-    },
+    // addNewProduct: (state, action) => {
+    //   state.items.push(action.payload)
+    // },
+    // deleteProduct: (state, action) => {
+    //   const filterProducts = state.items.filter((product) => product._id != action.payload)
+    //   state.items = filterProducts
+    // },
     updateProduct: (state, action) => {
       const { id, title, image, description, category, quantity, sold, shipping, price } =
         action.payload
@@ -149,8 +151,19 @@ export const productsReducer = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
+      const { totalPage, currentPage, totalProducts } = action.payload.payload.pagination
+      state.pagination = {
+        totalProducts: totalProducts,
+        totalPage: totalPage,
+        currentPage: currentPage
+      }
+      state.items = action.payload.payload.products
       state.isLoading = false
-      state.items = action.payload
+    })
+    builder.addCase(createProduct.fulfilled, (state, action) => {
+      console.log(action.payload)
+      state.items.push(action.payload.payload)
+      state.isLoading = false
     })
     builder.addCase(deleteproduct.fulfilled, (state, action) => {
       state.items = state.items.filter((product) => product.slug !== action.payload)
