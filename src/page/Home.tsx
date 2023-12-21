@@ -126,7 +126,7 @@ const Home = () => {
                     }}>
                     Add to Cart
                   </button>
-                  <Link to={`/product/${items.slug}`}>
+                  <Link to={`/products/${items.slug}`}>
                     <button className="product-button show-more-button">show more</button>
                   </Link>
                 </div>

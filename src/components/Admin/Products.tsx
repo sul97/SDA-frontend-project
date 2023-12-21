@@ -13,6 +13,7 @@ const Products = () => {
   const { items, pagination, isLoading, error } = useSelector(
     (state: RootState) => state.productsReducer
   )
+  const { categories } = useSelector((state: RootState) => state.categoryReducer)
   const [productEdit, setProductEdit] = useState(false)
   const [productId, setProductId] = useState('')
   const [product, setProduct] = useState({
@@ -29,10 +30,8 @@ const Products = () => {
   const [productNameError, setProductNameError] = useState('')
   const [descriptionError, setDescriptionError] = useState('')
   const [categoriesError, setCategoriesError] = useState([''])
-  const [variantsError, setVariantsError] = useState([''])
-  const [sizesError, setSizesError] = useState([''])
-  const [priceError, setPriceError] = useState(0)
   const [priceErrorMessage, setPriceErrorMessage] = useState('')
+  const [priceError, setPriceError] = useState(0)
 
   useEffect(() => {
     dispatch(fetchData())
@@ -44,7 +43,9 @@ const Products = () => {
   // if (error) {
   //   return <p>{error}</p>
   // }
-  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = event.target
 
     if (event.target.type === 'file') {
@@ -65,42 +66,32 @@ const Products = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    // let isValid = true
+    let isValid = true
 
-    // if (product.name.length < 2) {
-    //   setProductNameError('Product name  must be at least 3 characters')
-    //   isValid = false
-    // }
+    if (product.title.length < 2) {
+      setProductNameError('Product name  must be at least 3 characters')
+      isValid = false
+    }
 
-    // if (product.description.length < 5) {
-    //   setDescriptionError('Description must be at least 5 characters')
-    //   isValid = false
-    // }
+    if (product.description.length < 5) {
+      setDescriptionError('Description must be at least 5 characters')
+      isValid = false
+    }
 
-    // if (product.categories.length === 0) {
-    //   setCategoriesError(['At least one category is required'])
-    //   isValid = false
-    // }
+    if (product.category.length === 0) {
+      setCategoriesError(['At least one category is required'])
+      isValid = false
+    }
 
-    // if (product.variants.length === 0) {
-    //   setVariantsError(['At least one variant is required'])
-    //   isValid = false
-    // }
+    if (product.price <= 0) {
+      setPriceError(0)
+      setPriceErrorMessage('Price must be a positive number')
+      isValid = false
+    }
 
-    // if (product.sizes.length === 0) {
-    //   setSizesError(['At least one size is required'])
-    //   isValid = false
-    // }
-
-    // if (product.price <= 0) {
-    //   setPriceError(0)
-    //   setPriceErrorMessage('Price must be a positive number')
-    //   isValid = false
-    // }
-
-    // if (!isValid) {
-    //   return
-    // }
+    if (!isValid) {
+      return
+    }
     // if (!productEdit) {
     const formData = new FormData()
     formData.append('title', product.title)
@@ -219,7 +210,7 @@ const Products = () => {
                   <label htmlFor="category" className={labelStyle}>
                     Categories: (use comma , to create multiple)
                   </label>
-                  <input
+                  {/* <input
                     type="text"
                     name="category"
                     id="category"
@@ -227,7 +218,16 @@ const Products = () => {
                     onChange={handleChange}
                     className="input-product"
                     required
-                  />
+                  /> */}
+                  <select name="category" id="category" onChange={handleChange}>
+                    {categories.map((category) => {
+                      return (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      )
+                    })}
+                  </select>
                   <p>{categoriesError}</p>
                 </div>
                 <div className="mb-4">

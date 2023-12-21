@@ -34,7 +34,7 @@ export const Index = () => {
         <Route path="/register" element={<Register />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/products/:slug" element={<ProductDetails />} />
         <Route path="/users/activate/:token" element={<ActivatePage />} />
 
         <Route path="/dashboard" element={<ProtectedRoute />}>

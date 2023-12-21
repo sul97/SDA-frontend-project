@@ -48,12 +48,20 @@ export const fetchData = createAsyncThunk('products/fetchData', async () => {
   return response.data
 })
 
-export const deleteproduct = createAsyncThunk('users/deleteProduct', async (slug: string) => {
+export const deleteproduct = createAsyncThunk('products/deleteProduct', async (slug: string) => {
   await axios.delete(`${API_BASE_URL}/products/${slug}`)
   return slug
 })
+export const findProductBySlug = createAsyncThunk(
+  'products/findProductBySlug',
+  async (slug: string) => {
+    await axios.get(`${API_BASE_URL}/products/${slug}`)
+    return slug
+  }
+)
+
 export const createProduct = createAsyncThunk(
-  'users/createProduct',
+  'products/createProduct',
   async (newProductData: FormData) => {
     const response = await axios.post(`${API_BASE_URL}/products`, newProductData)
     console.log(response)
@@ -109,13 +117,13 @@ export const productsReducer = createSlice({
     searchProduct: (state, action) => {
       state.searchTerm = action.payload
     },
-    findProductById: (state, action) => {
-      const id = action.payload
-      const foundProduct = state.items.find((product) => product._id === id)
-      if (foundProduct) {
-        state.singlePoduct = foundProduct
-      }
-    },
+    // findProductById: (state, action) => {
+    //   const id = action.payload
+    //   const foundProduct = state.items.find((product) => product._id === id)
+    //   if (foundProduct) {
+    //     state.singlePoduct = foundProduct
+    //   }
+    // },
     sortProducts: (state, action) => {
       const sortingCriteria = action.payload
 
@@ -169,6 +177,13 @@ export const productsReducer = createSlice({
       state.items = state.items.filter((product) => product.slug !== action.payload)
       state.isLoading = false
     })
+    builder.addCase(findProductBySlug.fulfilled, (state, action) => {
+      const slug = action.payload
+      const foundProduct = state.items.find((product) => product.slug == slug)
+      if (foundProduct) {
+        state.singlePoduct = foundProduct
+      }
+    })
 
     // builder.addCase(updateProduct.fulfilled, (state, action) => {
     //   const { slug, title, image, description, category, quantity, sold, shipping, price } =
@@ -206,10 +221,5 @@ export const productsReducer = createSlice({
     )
   }
 })
-export const {
-  sortProducts,
-  searchProduct,
-
-  findProductById
-} = productsReducer.actions
+export const { sortProducts, searchProduct } = productsReducer.actions
 export default productsReducer.reducer

@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
 import { Link, useParams } from 'react-router-dom'
 
-import { Product, fetchData, findProductById } from '../redux/slices/products/productsSlice'
+import { Product, fetchData, findProductBySlug } from '../redux/slices/products/productsSlice'
 import { toast } from 'react-toastify'
 import { addToCart } from '../redux/slices/cart/cartSlice'
+import { Category } from '../redux/slices/categories/categorySlice'
+const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 export const SingleProduct = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { id } = useParams()
+  const { slug } = useParams()
   const { singlePoduct, isLoading, error } = useSelector(
     (state: RootState) => state.productsReducer
   )
@@ -20,20 +22,25 @@ export const SingleProduct = () => {
     toast.success('Successful Add To Cart')
   }
   useEffect(() => {
-    dispatch(fetchData()).then(() => dispatch(findProductById(Number(id))))
-  }, [id])
+    dispatch(fetchData()).then(() => dispatch(findProductBySlug(String(slug))))
+  }, [])
 
-  if (isLoading) {
-    return <p>Loading the data</p>
-  }
-  if (error) {
-    return <p>{error}</p>
-  }
+  // if (isLoading) {
+  //   return <p>Loading the data</p>
+  // }
+  // if (error) {
+  //   return <p>{error}</p>
+  // }
 
-  const getCategoryNameById = (categoryId: number) => {
-    const category = categories.find((category) => category.id === categoryId)
-    return category ? category.name + ' - ' : 'not Found'
-  }
+  // const getCategoryNameById = (categoryId: string) => {
+  //   const category = categories.find((category) => category._id === categoryId)
+  //   return category ? category.name + ' - ' : 'not Found'
+  // }
+
+  // const getCategoryName = (categoryId: string) => {
+  //   const category = categories.find((category) => category._id == categoryId)
+  //   return category ? category.name + ' , ' : 'Category not found'
+  // }
 
   return (
     <div className="">
@@ -41,16 +48,19 @@ export const SingleProduct = () => {
         {singlePoduct && (
           <article key={singlePoduct._id} className="product">
             <div className="product-card">
-              <img src={singlePoduct.image} alt={singlePoduct.title} width="500" height="300" />
+              <img
+                src={`${API_BASE_URL}/${singlePoduct.image}`}
+                alt={singlePoduct.title}
+                width="500"
+                height="300"
+              />
               <h3 className="product-title">{singlePoduct.title}</h3>
               <p className="product-description">{singlePoduct.description}</p>
               {/* <p className="product-description">
-                {singlePoduct.variants && singlePoduct.variants.join(' - ')}
-              </p>
-              <p className="product-description">
-                {singlePoduct.categorices &&
-                  singlePoduct.categories.map((categoryId) => getCategoryNameById(categoryId))}
+                {singlePoduct.category &&
+                  singlePoduct.category?.map((categoryId) => getCategoryNameById(categoryId))}
               </p> */}
+
               <h3 className="product-title">{singlePoduct.price} SAR</h3>
               <br></br>
               <button
