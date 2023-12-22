@@ -48,12 +48,7 @@ export const SingleProduct = () => {
         {singlePoduct && (
           <article key={singlePoduct._id} className="product">
             <div className="product-card">
-              <img
-                src={`${API_BASE_URL}/${singlePoduct.image}`}
-                alt={singlePoduct.title}
-                width="500"
-                height="300"
-              />
+              <img src={singlePoduct.image} alt={singlePoduct.title} width="500" height="300" />
               <h3 className="product-title">{singlePoduct.title}</h3>
               <p className="product-description">{singlePoduct.description}</p>
               {/* <p className="product-description">

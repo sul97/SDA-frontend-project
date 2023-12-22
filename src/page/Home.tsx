@@ -116,7 +116,7 @@ const Home = () => {
             return (
               <article key={_id} className="product">
                 <div className="product-card">
-                  <img src={`${API_BASE_URL}/${image}`} alt={title} />
+                  <img src={image} alt={title} />
                   <h1 className="product-title">{title}</h1>
                   <h2 className="product-description">{price} SAR</h2>
                   <button

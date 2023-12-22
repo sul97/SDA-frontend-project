@@ -46,22 +46,18 @@ const Products = () => {
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = event.target
+    // const { name, value } = event.target
 
     if (event.target.type === 'file') {
       const fileInput = (event.target as HTMLInputElement) || ''
-
-      setProduct({
-        ...product,
-        [event.target.name]: fileInput.files?.[0]
+      setProduct((prevProduct) => {
+        return { ...prevProduct, [event.target.name]: fileInput.files?.[0] }
       })
-      return
+    } else {
+      setProduct((prevProduct) => {
+        return { ...prevProduct, [event.target.name]: event.target.value }
+      })
     }
-
-    setProduct({
-      ...product,
-      [name]: value
-    })
   }
 
   const handleSubmit = (event: FormEvent) => {
@@ -261,21 +257,6 @@ const Products = () => {
                   {/* <p>{sizesError}</p> */}
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="shipping" className={labelStyle}>
-                    shipping:
-                  </label>
-                  <input
-                    type="text"
-                    name="shipping"
-                    id="shipping"
-                    value={product.shipping}
-                    onChange={handleChange}
-                    className="input-product"
-                    required
-                  />
-                  <p>{priceErrorMessage}</p>
-                </div>
-                <div className="mb-4">
                   <label htmlFor="price" className={labelStyle}>
                     Price:
                   </label>
@@ -315,7 +296,7 @@ const Products = () => {
                 return (
                   <article key={items._id} className="product">
                     <div className="product-card">
-                      <img src={`${API_BASE_URL}/${items.image}`} alt={items.title} width="300" />
+                      <img src={items.image} alt={items.title} width="300" />
                       <h3 className="product-title">{items.title}</h3>
                       <p className="product-description">{items.description}</p>
                       <p className="product-description">quantity: {items.quantity}</p>
