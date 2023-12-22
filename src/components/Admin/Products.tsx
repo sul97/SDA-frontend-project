@@ -11,6 +11,7 @@ import {
 } from '../../redux/slices/products/productsSlice'
 
 import AdminSidebar from './AdminSidebar'
+import { fetchCategory } from '../../redux/slices/categories/categorySlice'
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -36,9 +37,12 @@ const Products = () => {
   const [priceError, setPriceError] = useState(0)
 
   useEffect(() => {
-    dispatch(fetchData())
+    dispatch(fetchCategory())
   }, [dispatch])
 
+  useEffect(() => {
+    dispatch(fetchData())
+  }, [dispatch])
   // if (isLoading) {
   //   return <p>Loading the data...</p>
   // }
@@ -60,7 +64,7 @@ const Products = () => {
     }
   }
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     let isValid = true
 
@@ -99,7 +103,6 @@ const Products = () => {
       formData.append('sold', product.sold.toString())
       formData.append('shipping', product.shipping.toString())
       dispatch(createProduct(formData))
-      toast.success('Successful Add Product')
       setProduct({
         title: '',
         slug: '',
@@ -126,6 +129,17 @@ const Products = () => {
       }
       dispatch(updateProduct(updateProducts))
       toast.success('Successful Update Product')
+      setProduct({
+        title: '',
+        slug: '',
+        image: '',
+        description: '',
+        category: '',
+        quantity: 0,
+        sold: 0,
+        shipping: 0,
+        price: 0
+      })
     }
   }
   const handleEdit = (
@@ -148,7 +162,7 @@ const Products = () => {
         slug,
         image,
         description,
-        category,
+        category: category ? category._id : '',
         quantity,
         sold,
         shipping,
@@ -171,6 +185,7 @@ const Products = () => {
 
   const handleDeleteProduct = (slug: string) => {
     dispatch(deleteproduct(slug))
+    toast.success('Successful Delete Product')
   }
   const labelStyle = 'block text-sm font-medium text-gray-800'
   return (
@@ -216,14 +231,19 @@ const Products = () => {
                   <label htmlFor="category" className={labelStyle}>
                     Categories: (use comma , to create multiple)
                   </label>
-                  <select name="category" id="category" onChange={handleChange}>
-                    {categories.map((category) => {
-                      return (
-                        <option key={category._id} value={category._id}>
-                          {category.name}
-                        </option>
-                      )
-                    })}
+                  <select
+                    name="category"
+                    id="category"
+                    onChange={handleChange}
+                    value={product.category}>
+                    <option value="" disabled>
+                      Select Category
+                    </option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
                   </select>
                   <p>{categoriesError}</p>
                 </div>

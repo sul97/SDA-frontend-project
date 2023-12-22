@@ -21,7 +21,7 @@ const ForgetPassWord = () => {
     <div className="login-container">
       <form onSubmit={handleSubmit}>
         <div className="login-card">
-          <h2 className="login-title">Login</h2>
+          <h2 className="login-title">Email:</h2>
           <div className="input-container">
             <label>Email</label>
             <input

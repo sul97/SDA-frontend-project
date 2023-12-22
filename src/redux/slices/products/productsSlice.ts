@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 export type Product = {
   _id: string
@@ -106,7 +107,7 @@ export const productsReducer = createSlice({
       state.isLoading = false
     })
     builder.addCase(createProduct.fulfilled, (state, action) => {
-      console.log(action.payload)
+      toast.success(action.payload.message)
       state.items.push(action.payload.payload)
       state.isLoading = false
     })
