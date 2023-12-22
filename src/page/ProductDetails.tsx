@@ -6,8 +6,6 @@ import { Link, useParams } from 'react-router-dom'
 import { Product, fetchData, findProductBySlug } from '../redux/slices/products/productsSlice'
 import { toast } from 'react-toastify'
 import { addToCart } from '../redux/slices/cart/cartSlice'
-import { Category } from '../redux/slices/categories/categorySlice'
-const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 export const SingleProduct = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -15,7 +13,6 @@ export const SingleProduct = () => {
   const { singlePoduct, isLoading, error } = useSelector(
     (state: RootState) => state.productsReducer
   )
-  const { categories } = useSelector((state: RootState) => state.categoryReducer)
 
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart(product))
@@ -32,15 +29,9 @@ export const SingleProduct = () => {
   //   return <p>{error}</p>
   // }
 
-  // const getCategoryNameById = (categoryId: string) => {
-  //   const category = categories.find((category) => category._id === categoryId)
-  //   return category ? category.name + ' - ' : 'not Found'
-  // }
-
-  // const getCategoryName = (categoryId: string) => {
-  //   const category = categories.find((category) => category._id == categoryId)
-  //   return category ? category.name + ' , ' : 'Category not found'
-  // }
+  const getCategoryName = (categoryId: string) => {
+    return categoryId ? categoryId.name : 'Category not found'
+  }
 
   return (
     <div className="">
@@ -51,10 +42,10 @@ export const SingleProduct = () => {
               <img src={singlePoduct.image} alt={singlePoduct.title} width="500" height="300" />
               <h3 className="product-title">{singlePoduct.title}</h3>
               <p className="product-description">{singlePoduct.description}</p>
-              {/* <p className="product-description">
-                {singlePoduct.category &&
-                  singlePoduct.category?.map((categoryId) => getCategoryNameById(categoryId))}
-              </p> */}
+
+              <p className="product-description">
+                <span>{getCategoryName(singlePoduct.category)}</span>
+              </p>
 
               <h3 className="product-title">{singlePoduct.price} SAR</h3>
               <br></br>

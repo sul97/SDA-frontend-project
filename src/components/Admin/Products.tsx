@@ -3,16 +3,18 @@ import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, AppDispatch } from '../../redux/store'
 
-import { createProduct, deleteproduct, fetchData } from '../../redux/slices/products/productsSlice'
+import {
+  createProduct,
+  deleteproduct,
+  fetchData,
+  updateProduct
+} from '../../redux/slices/products/productsSlice'
 
 import AdminSidebar from './AdminSidebar'
-const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { items, pagination, isLoading, error } = useSelector(
-    (state: RootState) => state.productsReducer
-  )
+  const { items, isLoading, error } = useSelector((state: RootState) => state.productsReducer)
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
   const [productEdit, setProductEdit] = useState(false)
   const [productId, setProductId] = useState('')
@@ -46,8 +48,6 @@ const Products = () => {
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    // const { name, value } = event.target
-
     if (event.target.type === 'file') {
       const fileInput = (event.target as HTMLInputElement) || ''
       setProduct((prevProduct) => {
@@ -88,76 +88,86 @@ const Products = () => {
     if (!isValid) {
       return
     }
-    // if (!productEdit) {
-    const formData = new FormData()
-    formData.append('title', product.title)
-    formData.append('price', product.price.toString())
-    formData.append('image', product.image)
-    formData.append('category', product.category.toString())
-    formData.append('description', product.description)
-    formData.append('quantity', product.quantity.toString())
-    formData.append('sold', product.sold.toString())
-    formData.append('shipping', product.shipping.toString())
-    dispatch(createProduct(formData))
-    toast.success('Successful Add Product')
+    if (!productEdit) {
+      const formData = new FormData()
+      formData.append('title', product.title)
+      formData.append('price', product.price.toString())
+      formData.append('image', product.image)
+      formData.append('category', product.category.toString())
+      formData.append('description', product.description)
+      formData.append('quantity', product.quantity.toString())
+      formData.append('sold', product.sold.toString())
+      formData.append('shipping', product.shipping.toString())
+      dispatch(createProduct(formData))
+      toast.success('Successful Add Product')
+      setProduct({
+        title: '',
+        slug: '',
+        image: '',
+        description: '',
+        category: '',
+        quantity: 0,
+        sold: 0,
+        shipping: 0,
+        price: 0
+      })
+    } else {
+      const updateProducts = {
+        _id: productId,
+        title: product.title,
+        slug: product.slug,
+        image: product.image,
+        description: product.description,
+        category: product.category,
+        quantity: product.quantity,
+        sold: product.sold,
+        shipping: product.shipping,
+        price: product.price
+      }
+      dispatch(updateProduct(updateProducts))
+      toast.success('Successful Update Product')
+    }
   }
-  //   } else {
-  //     const updateProducts = {
-  //       _id: productId,
-  //       title: product.title,
-  //       slug: product.slug,
-  //       image: product.image,
-  //       description: product.description,
-  //       category: product.category,
-  //       quantity: product.quantity,
-  //       sold: product.sold,
-  //       shipping: product.shipping,
-  //       price: product.price
-  //     }
-  //     dispatch(updateProduct(updateProducts))
-  //     toast.success('Successful Update Product')
-  //   }
-  // }
-  // const handleEdit = (
-  //   _id: string,
-  //   slug: string,
-  //   title: string,
-  //   image: string,
-  //   description: string,
-  //   category: string,
-  //   quantity: number,
-  //   sold: number,
-  //   shipping: number,
-  //   price: number
-  // ) => {
-  //   setProductId(_id)
-  //   setProductEdit(!productEdit)
-  //   if (!productEdit) {
-  //     setProduct({
-  //       title,
-  //       slug,
-  //       image,
-  //       description,
-  //       category,
-  //       quantity,
-  //       sold,
-  //       shipping,
-  //       price
-  //     })
-  //   } else {
-  //     setProduct({
-  //       title: '',
-  //       slug: slug,
-  //       image: '',
-  //       description: '',
-  //       category: '',
-  //       quantity: 0,
-  //       sold: 0,
-  //       shipping: 0,
-  //       price: 0
-  //     })
-  //   }
-  // }
+  const handleEdit = (
+    _id: string,
+    slug: string,
+    title: string,
+    image: string,
+    description: string,
+    category: string,
+    quantity: number,
+    sold: number,
+    shipping: number,
+    price: number
+  ) => {
+    setProductId(_id)
+    setProductEdit(!productEdit)
+    if (!productEdit) {
+      setProduct({
+        title,
+        slug,
+        image,
+        description,
+        category,
+        quantity,
+        sold,
+        shipping,
+        price
+      })
+    } else {
+      setProduct({
+        title: '',
+        slug: slug,
+        image: '',
+        description: '',
+        category: '',
+        quantity: 0,
+        sold: 0,
+        shipping: 0,
+        price: 0
+      })
+    }
+  }
 
   const handleDeleteProduct = (slug: string) => {
     dispatch(deleteproduct(slug))
@@ -206,15 +216,6 @@ const Products = () => {
                   <label htmlFor="category" className={labelStyle}>
                     Categories: (use comma , to create multiple)
                   </label>
-                  {/* <input
-                    type="text"
-                    name="category"
-                    id="category"
-                    value={product.category}
-                    onChange={handleChange}
-                    className="input-product"
-                    required
-                  /> */}
                   <select name="category" id="category" onChange={handleChange}>
                     {categories.map((category) => {
                       return (
@@ -281,7 +282,7 @@ const Products = () => {
                     accept="image/*"
                     onChange={handleChange}
                     className="input-group__input"
-                    required
+                    // required
                   />
                 </div>
                 <button type="submit" className="product-button text-blue-900 bg-gray-300 ">
@@ -302,7 +303,7 @@ const Products = () => {
                       <p className="product-description">quantity: {items.quantity}</p>
                       <p className="product-description">sold: {items.sold}</p>
                       <h3 className="product-title">{items.price} SAR</h3>
-                      {/* <button
+                      <button
                         className="text-green-800 product-button"
                         onClick={() => {
                           handleEdit(
@@ -319,7 +320,7 @@ const Products = () => {
                           )
                         }}>
                         Edit
-                      </button> */}
+                      </button>
                       <button
                         className="text-red-500 product-button show-more-button"
                         onClick={() => {

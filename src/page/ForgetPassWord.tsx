@@ -2,6 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../redux/store'
 import { forgetPassword } from '../redux/slices/users/userSlice'
+import { toast } from 'react-toastify'
 
 const ForgetPassWord = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -12,8 +13,8 @@ const ForgetPassWord = () => {
   }
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    dispatch(forgetPassword(email))
-    console.log('email sending')
+    const response = await dispatch(forgetPassword(email))
+    toast.success(`${response.payload.message}`)
   }
 
   return (

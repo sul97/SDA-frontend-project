@@ -8,11 +8,10 @@ import { fetchData, searchProduct, Product } from '../redux/slices/products/prod
 import { addToCart } from '../redux/slices/cart/cartSlice'
 
 import SortProduct from '../components/SortProduct'
-const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { items, isLoading, error, searchTerm } = useSelector(
+  const { items, pagination, isLoading, error, searchTerm } = useSelector(
     (state: RootState) => state.productsReducer
   )
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
@@ -21,6 +20,9 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(4)
 
+  // totalProducts: number
+  // totalPage: number
+  // currentPage: number
   useEffect(() => {
     dispatch(fetchData())
   }, [dispatch])
