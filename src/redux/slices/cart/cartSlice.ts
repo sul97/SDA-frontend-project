@@ -20,7 +20,7 @@ export const cartReducer = createSlice({
       localStorage.setItem('cart', JSON.stringify(state.cartItems))
     },
     deletetCart: (state, action) => {
-      state.cartItems = state.cartItems.filter((cart) => cart.id != action.payload)
+      state.cartItems = state.cartItems.filter((cart) => cart._id != action.payload)
       localStorage.setItem('cart', JSON.stringify(state.cartItems))
     },
     deletetAllCart: (state) => {
