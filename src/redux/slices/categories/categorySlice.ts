@@ -62,7 +62,6 @@ export const categoryReducer = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCategory.fulfilled, (state, action) => {
       // state.status = action.payload.meassge
-      console.log(action.payload)
       state.isLoading = false
       state.categories = action.payload.payload
     })

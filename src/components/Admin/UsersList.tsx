@@ -60,7 +60,7 @@ const UsersList = () => {
         <div className="card grid gap-4">
           <div className="p-10 w-full">
             <section className="products">
-              {users.length > 0 &&
+              {users?.length > 0 &&
                 users.map((user) => {
                   if (!user.isAdmin) {
                     return (

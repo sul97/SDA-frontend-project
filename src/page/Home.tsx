@@ -18,21 +18,11 @@ const Home = () => {
   const [selectCategory, setSelectCategory] = useState<string | ''>('')
 
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(4)
+  const [itemsPerPage, setItemsPerPage] = useState(3)
 
-  // totalProducts: number
-  // totalPage: number
-  // currentPage: number
   useEffect(() => {
-    dispatch(fetchData())
-  }, [dispatch])
-
-  // if (isLoading) {
-  //   return <p>Loading the data...</p>
-  // }
-  // if (error) {
-  //   return <p>{error}</p>
-  // }
+    dispatch(fetchData({ page: pagination.currentPage, limit: pagination.totalProducts }))
+  }, [dispatch, pagination.currentPage, pagination.totalProducts])
 
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart(product))

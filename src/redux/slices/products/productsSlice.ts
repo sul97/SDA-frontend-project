@@ -44,10 +44,22 @@ const initialState: ProductState = {
   singlePoduct: {} as Product,
   addedProduct: null
 }
-export const fetchData = createAsyncThunk('products/fetchData', async () => {
-  const response = await axios.get(`${API_BASE_URL}/products`)
-  return response.data
-})
+export const fetchData = createAsyncThunk(
+  'products/fetchData',
+  async ({ page, limit }: { page: number; limit: number }) => {
+    const response = await axios.get(`${API_BASE_URL}/products`, {
+      params: {
+        page,
+        limit
+      }
+    })
+    return response.data
+  }
+)
+// export const fetchData = createAsyncThunk('products/fetchData', async () => {
+//   const response = await axios.get(`${API_BASE_URL}/products`)
+//   return response.data
+// })
 
 export const deleteproduct = createAsyncThunk('products/deleteProduct', async (slug: string) => {
   await axios.delete(`${API_BASE_URL}/products/${slug}`)
@@ -103,6 +115,7 @@ export const productsReducer = createSlice({
         totalPage: totalPage,
         currentPage: currentPage
       }
+      // state.pagination = action.payload.payload.pagination
       state.items = action.payload.payload.products
       state.isLoading = false
     })

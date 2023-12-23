@@ -49,7 +49,6 @@ export const orderReducer = createSlice({
 
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.isLoading = false
-        console.log(action.payload.payload.orders)
         state.orders = action.payload.payload.orders
       })
     builder

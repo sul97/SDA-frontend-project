@@ -43,12 +43,7 @@ const Products = () => {
   useEffect(() => {
     dispatch(fetchData())
   }, [dispatch])
-  // if (isLoading) {
-  //   return <p>Loading the data...</p>
-  // }
-  // if (error) {
-  //   return <p>{error}</p>
-  // }
+
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {

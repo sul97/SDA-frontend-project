@@ -22,13 +22,6 @@ export const SingleProduct = () => {
     dispatch(fetchData()).then(() => dispatch(findProductBySlug(String(slug))))
   }, [])
 
-  // if (isLoading) {
-  //   return <p>Loading the data</p>
-  // }
-  // if (error) {
-  //   return <p>{error}</p>
-  // }
-
   const getCategoryName = (categoryId: string) => {
     return categoryId ? categoryId.name : 'Category not found'
   }
@@ -44,7 +37,7 @@ export const SingleProduct = () => {
               <p className="product-description">{singlePoduct.description}</p>
 
               <p className="product-description">
-                <span>{getCategoryName(singlePoduct.category)}</span>
+                <span>Category : {getCategoryName(singlePoduct.category)}</span>
               </p>
 
               <h3 className="product-title">{singlePoduct.price} SAR</h3>
