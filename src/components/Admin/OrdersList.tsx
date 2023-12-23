@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../redux/store'
 
-import { fetchOrders } from '../../redux/slices/orders/orderSlice'
+import { deleteOrder, fetchOrders } from '../../redux/slices/orders/orderSlice'
 
 import AdminSidebar from './AdminSidebar'
+import { toast } from 'react-toastify'
 
 const OrdersList = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -15,20 +16,9 @@ const OrdersList = () => {
   useEffect(() => {
     dispatch(fetchOrders())
   }, [dispatch])
-
-  if (isLoading) {
-    return <p>Loading the data...</p>
-  }
-  if (error) {
-    return <p>{error}</p>
-  }
-  const getProductNameById = (producttId: string) => {
-    const product = items.find((product) => product._id == producttId)
-    return product ? product.title : ''
-  }
-  const getUserNameById = (userId: string) => {
-    const user = users.find((user) => user._id === userId)
-    return user ? user.name : '- User -'
+  const handleDeleteProduct = (_id: string) => {
+    dispatch(deleteOrder(_id))
+    toast.success('Successful Delete Product')
   }
   return (
     <div className="container">
@@ -38,19 +28,35 @@ const OrdersList = () => {
           <div className="p-10 w-full">
             <section className="products">
               {orders.length > 0 &&
-                orders.map((orders) => {
+                orders.map((order) => {
                   return (
-                    <article key={orders.id} className="product">
-                      <div className="product-card">
-                        <h3 className="product-title">
-                          {orders.productId && getProductNameById(orders.productId)}
-                        </h3>
-
-                        <h3 className="product-description">
-                          {orders.userId && getUserNameById(orders.userId)}
-                        </h3>
-                        <h3 className="product-description">{orders.purchasedAt}</h3>
+                    <article key={order._id} className="product">
+                      <div
+                        className="product-card"
+                        style={{ display: 'grid', placeItems: 'center' }}>
+                        <h2>{order.user.name}</h2>
+                        <h2>Products:</h2>
+                        {order.products.map((productOrder, index) => (
+                          <div key={productOrder._id}>
+                            <h3 className="product-description">
+                              {`${index + 1}. ${productOrder.product.title}`}
+                            </h3>
+                          </div>
+                        ))}
+                        <h2>Amount :{order.payment.amount}</h2>
+                        <h2>created At: </h2>
+                        <h3>{order.createdAt}</h3>
                       </div>
+                      <div className="flex justify-center">
+                        <button
+                          className="text-red-500 product-button show-more-button"
+                          onClick={() => {
+                            handleDeleteProduct(order._id)
+                          }}>
+                          Delete
+                        </button>
+                      </div>
+                      <br></br>
                     </article>
                   )
                 })}
