@@ -34,12 +34,6 @@ const UsersList = () => {
     }
   }, [error])
 
-  // if (isLoading) {
-  //   return <p>Loading the data...</p>
-  // }
-  // if (error) {
-  //   return <p>{error}</p>
-  // }
   const handleDelete = async (id: string) => {
     await dispatch(deleteUser(id))
     toast.success('Successful Delete User')
@@ -60,7 +54,7 @@ const UsersList = () => {
         <div className="card grid gap-4">
           <div className="p-10 w-full">
             <section className="products">
-              {users?.length > 0 &&
+              {users.length > 0 &&
                 users.map((user) => {
                   if (!user.isAdmin) {
                     return (
@@ -69,7 +63,6 @@ const UsersList = () => {
                           <img src={user.image} alt={user.image} />
                           <h3 className="product-title">{user.name}</h3>
                           <p className="product-description">{user.email}</p>
-                          {/* <p className="product-description">{user.role}</p> */}
                           <button
                             className="text-red-800 product-button"
                             onClick={() => {

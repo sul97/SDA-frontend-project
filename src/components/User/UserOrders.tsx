@@ -11,8 +11,8 @@ const UserOrders = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { cartItems } = useSelector((state: RootState) => state.cartReducer)
 
-  const handelRemoveFromCart = (id: number) => {
-    dispatch(deletetCart(id))
+  const handelRemoveFromCart = (_id: string) => {
+    dispatch(deletetCart(_id))
   }
 
   return (
@@ -23,13 +23,13 @@ const UserOrders = () => {
         <section className="products">
           {cartItems.length > 0 &&
             cartItems.map((cartItem) => {
-              const { id, name, image, price, description } = cartItem
+              const { _id, title, image, price, description } = cartItem
               return (
-                <article key={id} className="product-card">
+                <article key={_id} className="product-card">
                   <div className="product">
-                    <img src={image} alt={name} />
+                    <img src={image} alt={title} />
                     <div className="cart-item-info">
-                      <h2 className="product-title">{name}</h2>
+                      <h2 className="product-title">{title}</h2>
                       <p className="product-description">Price: {price} SAR</p>
                       <p className="product-description">
                         Discription:{description.substring(0, 13)}...
@@ -38,7 +38,7 @@ const UserOrders = () => {
                     <button
                       className="text-red-400"
                       onClick={() => {
-                        handelRemoveFromCart(cartItem.id)
+                        handelRemoveFromCart(cartItem._id)
                       }}>
                       <FaTrashAlt />
                     </button>

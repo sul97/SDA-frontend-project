@@ -36,30 +36,28 @@ export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id: str
   await axios.delete(`${API_BASE_URL}/orders/${id}`)
   return id
 })
+
 export const orderReducer = createSlice({
   name: 'order',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchOrders.pending, (state, action) => {
-        state.isLoading = true
-        state.error = null
-      })
-
-      .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.orders = action.payload.payload.orders
-      })
-    builder
-      .addCase(deleteOrder.fulfilled, (state, action) => {
-        state.orders = state.orders.filter((order) => order._id !== action.payload)
-        state.isLoading = false
-      })
-      .addCase(fetchOrders.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = 'Failed to fetch data'
-      })
+    builder.addCase(fetchOrders.pending, (state, action) => {
+      state.isLoading = true
+      state.error = null
+    })
+    builder.addCase(fetchOrders.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.orders = action.payload.payload.orders
+    })
+    builder.addCase(deleteOrder.fulfilled, (state, action) => {
+      state.orders = state.orders.filter((order) => order._id !== action.payload)
+      state.isLoading = false
+    })
+    builder.addCase(fetchOrders.rejected, (state, action) => {
+      state.isLoading = false
+      state.error = 'Failed to fetch data'
+    })
   }
 })
 

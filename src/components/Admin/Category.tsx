@@ -68,6 +68,7 @@ const Category = () => {
 
   const handleDeleteCategory = (_id: string) => {
     dispatch(deletetCategory(_id))
+    toast.success('Successful Delete Category')
   }
 
   return (

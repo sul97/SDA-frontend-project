@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 
 export type User = {
   _id: string
-  name: string
+  name: string | undefined
   email: string
   password: string
   image: string
@@ -171,7 +171,7 @@ export const usersReducer = createSlice({
       (action) => action.type.endsWith('/rejected'),
       (state, action) => {
         state.isLoading = false
-        state.error = action.payload || 'an error occured'
+        state.error = action.payload || ''
       }
     )
   }
