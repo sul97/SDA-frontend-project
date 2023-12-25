@@ -64,6 +64,11 @@ const Navbar = () => {
                 <Link to="/register">Register</Link>
               </li>
               <li>
+                <Link to="/cart">
+                  <CartIcon value={cartItems.length > 0 ? cartItems.length : 0} />
+                </Link>
+              </li>
+              <li>
                 <Link to="/login">Login</Link>
               </li>
             </>

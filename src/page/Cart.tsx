@@ -4,11 +4,12 @@ import { AppDispatch, RootState } from '../redux/store'
 import { FaTrashAlt } from 'react-icons/fa'
 
 import { deletetAllCart, deletetCart } from '../redux/slices/cart/cartSlice'
+import Payment from '../components/Payment'
 
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { cartItems } = useSelector((state: RootState) => state.cartReducer)
-
+  const { isLoggedIn } = useSelector((state: RootState) => state.usersReducer)
   const handelRemoveFromCart = (_id: string) => {
     dispatch(deletetCart(_id))
   }
@@ -66,6 +67,13 @@ const Cart = () => {
             )
           })}
       </section>
+      <div>
+        {cartItems.length > 0 && isLoggedIn ? (
+          <Payment cartItems={cartItems} amount={cartTotal()} />
+        ) : (
+          <p>Please log in first </p>
+        )}
+      </div>
     </div>
   )
 }

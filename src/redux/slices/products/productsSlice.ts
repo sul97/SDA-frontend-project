@@ -64,6 +64,18 @@ export const deleteproduct = createAsyncThunk('products/deleteProduct', async (s
   await axios.delete(`${API_BASE_URL}/products/${slug}`)
   return slug
 })
+export const fetchBrainTreeToken = createAsyncThunk('products/fetchBrainTreeToken', async () => {
+  const response = await axios.get(`${API_BASE_URL}/products/braintree/token`)
+  return response.data
+})
+export const payWithBraintree = createAsyncThunk(
+  'products/payWithBraintree',
+  async (data: object) => {
+    const response = await axios.post(`${API_BASE_URL}/products/braintree/payment`, data)
+    return response.data
+  }
+)
+
 export const findProductBySlug = createAsyncThunk(
   'products/findProductBySlug',
   async (slug: string) => {
