@@ -68,10 +68,18 @@ const Cart = () => {
           })}
       </section>
       <div>
-        {cartItems.length > 0 && isLoggedIn ? (
-          <Payment cartItems={cartItems} amount={cartTotal()} />
+        {isLoggedIn ? (
+          // User is logged in, display an empty cart
+          <div>
+            {cartItems.length > 0 ? (
+              <Payment cartItems={cartItems} amount={cartTotal()} />
+            ) : (
+              <p>Your cart is empty.</p>
+            )}
+          </div>
         ) : (
-          <p>Please log in first </p>
+          // User is not logged in, display "Please log in first" message
+          <p>Please log in first</p>
         )}
       </div>
     </div>
