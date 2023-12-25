@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from '../redux/store'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import { fetchData, searchProduct, Product } from '../redux/slices/products/productsSlice'
+import { searchProduct, Product, fetchProducts } from '../redux/slices/products/productsSlice'
 import { addToCart } from '../redux/slices/cart/cartSlice'
 
 import SortProduct from '../components/SortProduct'
@@ -16,10 +16,10 @@ const Home = () => {
   const [selectCategory, setSelectCategory] = useState<string | ''>('')
 
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(2)
+  const [itemsPerPage, setItemsPerPage] = useState(3)
 
   useEffect(() => {
-    dispatch(fetchData({ page: pagination.currentPage, limit: pagination.totalProducts }))
+    dispatch(fetchProducts({ page: pagination.currentPage, limit: pagination.totalProducts }))
   }, [dispatch, pagination.currentPage, pagination.totalProducts])
 
   const handleAddToCart = (product: Product) => {

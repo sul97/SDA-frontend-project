@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
 import { Link, useParams } from 'react-router-dom'
 
-import { Product, fetchProducts, findProductBySlug } from '../redux/slices/products/productsSlice'
+import { Product, fetchData, findProductBySlug } from '../redux/slices/products/productsSlice'
 import { toast } from 'react-toastify'
 import { addToCart } from '../redux/slices/cart/cartSlice'
 
@@ -17,7 +17,7 @@ export const SingleProduct = () => {
     toast.success('Successful Add To Cart')
   }
   useEffect(() => {
-    dispatch(fetchProducts()).then(() => dispatch(findProductBySlug(String(slug))))
+    dispatch(fetchData()).then(() => dispatch(findProductBySlug(String(slug))))
   }, [])
 
   const getCategoryName = (categoryId: string) => {

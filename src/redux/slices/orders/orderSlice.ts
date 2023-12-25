@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import api from '../../../api'
 import { User } from '../users/userSlice'
-import { Product } from '../products/productSlice'
+import { Product } from '../products/productsSlice'
 import axios from 'axios'
 
 const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL
@@ -25,12 +25,8 @@ const initialState: OrderState = {
   isLoading: false
 }
 export const fetchOrders = createAsyncThunk('orders/fetchOrder', async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/orders/all-orders`)
-    return response.data
-  } catch (error) {
-    throw new Error('Failed to fetch data')
-  }
+  const response = await axios.get(`${API_BASE_URL}/orders/all-orders`)
+  return response.data
 })
 export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id: string) => {
   await axios.delete(`${API_BASE_URL}/orders/${id}`)
@@ -48,6 +44,7 @@ export const orderReducer = createSlice({
     })
     builder.addCase(fetchOrders.fulfilled, (state, action) => {
       state.isLoading = false
+      console.log(action.payload.payload.orders)
       state.orders = action.payload.payload.orders
     })
     builder.addCase(deleteOrder.fulfilled, (state, action) => {

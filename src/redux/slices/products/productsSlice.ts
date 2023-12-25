@@ -7,7 +7,7 @@ export type Product = {
   title: string
   slug: string
   price: number
-  image: string | undefined | File
+  image: string
   category: string
   description: string
   quantity: number
@@ -44,8 +44,12 @@ const initialState: ProductState = {
   singlePoduct: {} as Product,
   addedProduct: null
 }
-export const fetchData = createAsyncThunk(
-  'products/fetchData',
+export const fetchData = createAsyncThunk('products/fetchData', async () => {
+  const response = await axios.get(`${API_BASE_URL}/products`)
+  return response.data
+})
+export const fetchProducts = createAsyncThunk(
+  'products/fetchProducts',
   async ({ page, limit }: { page: number; limit: number }) => {
     const response = await axios.get(`${API_BASE_URL}/products`, {
       params: {
@@ -56,11 +60,6 @@ export const fetchData = createAsyncThunk(
     return response.data
   }
 )
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const response = await axios.get(`${API_BASE_URL}/products`)
-  return response.data
-})
-
 export const deleteproduct = createAsyncThunk('products/deleteProduct', async (slug: string) => {
   await axios.delete(`${API_BASE_URL}/products/${slug}`)
   return slug
@@ -72,7 +71,6 @@ export const findProductBySlug = createAsyncThunk(
     return slug
   }
 )
-
 export const createProduct = createAsyncThunk(
   'products/createProduct',
   async (newProductData: FormData) => {
@@ -81,19 +79,12 @@ export const createProduct = createAsyncThunk(
     return response.data
   }
 )
-// export const updateProduct = createAsyncThunk(
-//   'products/updateProduct',
-//   async (productData: Partial<Product>) => {
-//     await axios.put(`${API_BASE_URL}/products/${productData.slug}`, productData)
-//     return productData
-//     // return response.data
-//   }
-// )
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async (data: { slug: string; formData: FormData }) => {
-    await axios.put(`${API_BASE_URL}/products/${data.slug}`, data.formData)
-    return data
+    const response = await axios.put(`${API_BASE_URL}/products/${data.slug}`, data.formData)
+    // return data
+    return response.data
   }
 )
 
@@ -117,23 +108,16 @@ export const productsReducer = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
+      state.items = action.payload.payload.products
+      state.isLoading = false
+    })
+    builder.addCase(fetchProducts.fulfilled, (state, action) => {
       const { totalPage, currentPage, totalProducts } = action.payload.payload.pagination
       state.pagination = {
         totalProducts: totalProducts,
         totalPage: totalPage,
         currentPage: currentPage
       }
-      // state.pagination = action.payload.payload.pagination
-      state.items = action.payload.payload.products
-      state.isLoading = false
-    })
-    builder.addCase(fetchProducts.fulfilled, (state, action) => {
-      // const { totalPage, currentPage, totalProducts } = action.payload.payload.pagination
-      // state.pagination = {
-      //   totalProducts: totalProducts,
-      //   totalPage: totalPage,
-      //   currentPage: currentPage
-      // }
       // // state.pagination = action.payload.payload.pagination
       state.items = action.payload.payload.products
       state.isLoading = false
@@ -147,31 +131,16 @@ export const productsReducer = createSlice({
       state.items = state.items.filter((product) => product.slug !== action.payload)
       state.isLoading = false
     })
-    // builder.addCase(updateProduct.fulfilled, (state, action) => {
-    //   console.log(action.payload)
-    //   const { _id, title, image, description, category, quantity, sold, price } = action.payload
-    //   const foundProduct = state.items.find((product) => product._id === _id)
-    //   if (foundProduct) {
-    //     foundProduct.title = title || foundProduct.title
-    //     foundProduct.image = image || foundProduct.image
-    //     foundProduct.description = description || foundProduct.description
-    //     foundProduct.category = category || foundProduct.category
-    //     foundProduct.quantity = quantity || foundProduct.quantity
-    //     foundProduct.sold = sold || foundProduct.sold
-    //     foundProduct.price = price || foundProduct.price
-    //   }
-    //   state.isLoading = false
-    // })
     builder.addCase(updateProduct.fulfilled, (state, action) => {
-      console.log(action.payload)
-      const updatedProduct = action.payload
-
-      // state.items = state.items.map((product) => {
-      //   if (product._id === updatedProduct._id) {
-      //     return { ...product, ...updatedProduct }
-      //   }
-      //   return product
-      // })
+      console.log(action.payload.payload)
+      const updatedProduct = action.payload.payload
+      console.log(updatedProduct)
+      state.items = state.items.map((product) => {
+        if (product._id === updatedProduct._id) {
+          return { ...product, ...updatedProduct }
+        }
+        return product
+      })
     })
     builder.addCase(findProductBySlug.fulfilled, (state, action) => {
       const slug = action.payload

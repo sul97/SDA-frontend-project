@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export type Product = {
+export type Products = {
   id: number
   name: string
   image: string
@@ -11,7 +11,7 @@ export type Product = {
 }
 
 export type ProductState = {
-  items: Product[]
+  items: Products[]
   error: null | string
   isLoading: boolean
 }
@@ -33,7 +33,7 @@ export const userSlice = createSlice({
       state.isLoading = false
       state.items = action.payload
     },
-    addProduct: (state, action: { payload: { product: Product } }) => {
+    addProduct: (state, action: { payload: { product: Products } }) => {
       // let's append the new product to the beginning of the array
       state.items = [action.payload.product, ...state.items]
     },

@@ -6,6 +6,7 @@ import { RootState, AppDispatch } from '../../redux/store'
 import {
   createProduct,
   deleteproduct,
+  fetchData,
   fetchProducts,
   updateProduct
 } from '../../redux/slices/products/productsSlice'
@@ -41,7 +42,7 @@ const Products = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchData())
   }, [dispatch])
 
   const handleChange = (
@@ -66,7 +67,7 @@ const Products = () => {
     formData.append('title', product.title)
     formData.append('price', product.price.toString())
     formData.append('image', product.image)
-    formData.append('category', product.category.toString())
+    formData.append('category', product.category)
     formData.append('description', product.description)
     formData.append('quantity', product.quantity.toString())
     formData.append('sold', product.sold.toString())
@@ -113,6 +114,7 @@ const Products = () => {
     } else {
       dispatch(updateProduct({ slug: product.slug, formData: formData }))
       toast.success('Successful Update Product')
+      dispatch(fetchData())
       setProduct({
         title: '',
         slug: '',
