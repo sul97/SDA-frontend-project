@@ -30,16 +30,16 @@ const UserProfile = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    // let isValid = true
+    let isValid = true
 
-    // if (user.name.length < 2) {
-    //   setFirstNameError('First name must be at least 2 characters')
-    //   isValid = false
-    // }
+    if (user.name.length < 2) {
+      setFirstNameError('First name must be at least 2 characters')
+      isValid = false
+    }
 
-    // if (!isValid) {
-    //   return
-    // }
+    if (!isValid) {
+      return
+    }
     const updatUserData = { _id: userData?._id, ...user }
     dispatch(updateUser(updatUserData))
   }

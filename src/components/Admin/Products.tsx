@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from '../../redux/store'
 import {
   createProduct,
   deleteproduct,
-  fetchData,
+  fetchProducts,
   updateProduct
 } from '../../redux/slices/products/productsSlice'
 
@@ -15,7 +15,7 @@ import { fetchCategory } from '../../redux/slices/categories/categorySlice'
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { items, isLoading, error } = useSelector((state: RootState) => state.productsReducer)
+  const { items } = useSelector((state: RootState) => state.productsReducer)
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
   const [productEdit, setProductEdit] = useState(false)
   const [productId, setProductId] = useState('')
@@ -41,7 +41,7 @@ const Products = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(fetchData())
+    dispatch(fetchProducts())
   }, [dispatch])
 
   const handleChange = (
@@ -61,42 +61,43 @@ const Products = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    let isValid = true
 
-    if (product.title.length < 2) {
-      setProductNameError('Product name  must be at least 3 characters')
-      isValid = false
-    }
+    const formData = new FormData()
+    formData.append('title', product.title)
+    formData.append('price', product.price.toString())
+    formData.append('image', product.image)
+    formData.append('category', product.category.toString())
+    formData.append('description', product.description)
+    formData.append('quantity', product.quantity.toString())
+    formData.append('sold', product.sold.toString())
+    formData.append('shipping', product.shipping.toString())
+    // let isValid = true
 
-    if (product.description.length < 5) {
-      setDescriptionError('Description must be at least 5 characters')
-      isValid = false
-    }
+    // if (product.title.length < 2) {
+    //   setProductNameError('Product name  must be at least 3 characters')
+    //   isValid = false
+    // }
 
-    if (product.category.length === 0) {
-      setCategoriesError(['At least one category is required'])
-      isValid = false
-    }
+    // if (product.description.length < 5) {
+    //   setDescriptionError('Description must be at least 5 characters')
+    //   isValid = false
+    // }
 
-    if (product.price <= 0) {
-      setPriceError(0)
-      setPriceErrorMessage('Price must be a positive number')
-      isValid = false
-    }
+    // if (product.category.length === 0) {
+    //   setCategoriesError(['At least one category is required'])
+    //   isValid = false
+    // }
 
-    if (!isValid) {
-      return
-    }
+    // if (product.price <= 0) {
+    //   setPriceError(0)
+    //   setPriceErrorMessage('Price must be a positive number')
+    //   isValid = false
+    // }
+
+    // if (!isValid) {
+    //   return
+    // }
     if (!productEdit) {
-      const formData = new FormData()
-      formData.append('title', product.title)
-      formData.append('price', product.price.toString())
-      formData.append('image', product.image)
-      formData.append('category', product.category.toString())
-      formData.append('description', product.description)
-      formData.append('quantity', product.quantity.toString())
-      formData.append('sold', product.sold.toString())
-      formData.append('shipping', product.shipping.toString())
       dispatch(createProduct(formData))
       setProduct({
         title: '',
@@ -110,19 +111,7 @@ const Products = () => {
         price: 0
       })
     } else {
-      const updateProducts = {
-        _id: productId,
-        title: product.title,
-        slug: product.slug,
-        image: product.image,
-        description: product.description,
-        category: product.category,
-        quantity: product.quantity,
-        sold: product.sold,
-        shipping: product.shipping,
-        price: product.price
-      }
-      dispatch(updateProduct(updateProducts))
+      dispatch(updateProduct({ slug: product.slug, formData: formData }))
       toast.success('Successful Update Product')
       setProduct({
         title: '',

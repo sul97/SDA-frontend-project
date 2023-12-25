@@ -3,23 +3,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
 import { Link, useParams } from 'react-router-dom'
 
-import { Product, fetchData, findProductBySlug } from '../redux/slices/products/productsSlice'
+import { Product, fetchProducts, findProductBySlug } from '../redux/slices/products/productsSlice'
 import { toast } from 'react-toastify'
 import { addToCart } from '../redux/slices/cart/cartSlice'
 
 export const SingleProduct = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { slug } = useParams()
-  const { singlePoduct, isLoading, error } = useSelector(
-    (state: RootState) => state.productsReducer
-  )
+  const { singlePoduct } = useSelector((state: RootState) => state.productsReducer)
 
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart(product))
     toast.success('Successful Add To Cart')
   }
   useEffect(() => {
-    dispatch(fetchData()).then(() => dispatch(findProductBySlug(String(slug))))
+    dispatch(fetchProducts()).then(() => dispatch(findProductBySlug(String(slug))))
   }, [])
 
   const getCategoryName = (categoryId: string) => {

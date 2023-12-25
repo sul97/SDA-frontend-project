@@ -14,7 +14,7 @@ import AdminSidebar from './AdminSidebar'
 
 const Category = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { categories, isLoading, error } = useSelector((state: RootState) => state.categoryReducer)
+  const { categories } = useSelector((state: RootState) => state.categoryReducer)
   const [category, setCategory] = useState('')
   const [categoryEdit, setCategoryEdit] = useState(false)
   const [categoryId, setCategoryId] = useState('')
@@ -23,13 +23,6 @@ const Category = () => {
   useEffect(() => {
     dispatch(fetchCategory())
   }, [dispatch])
-
-  // if (isLoading) {
-  //   return <p>Loading the data...</p>
-  // }
-  // if (error) {
-  //   return <p>{error}</p>
-  // }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCategory(event.target.value)

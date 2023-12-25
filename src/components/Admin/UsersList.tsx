@@ -7,7 +7,8 @@ import {
   unbanUser,
   deleteUser,
   fetchUsers,
-  clearError
+  clearError,
+  roleUser
 } from '../../redux/slices/users/userSlice'
 import { RootState, AppDispatch } from '../../redux/store'
 
@@ -15,7 +16,7 @@ import AdminSidebar from './AdminSidebar'
 
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { users, isLoading, error } = useSelector((state: RootState) => state.usersReducer)
+  const { users, error } = useSelector((state: RootState) => state.usersReducer)
 
   useEffect(() => {
     dispatch(fetchUsers())
@@ -46,7 +47,14 @@ const UsersList = () => {
       toast.error('Error Blocking')
     }
   }
-
+  const handleUserRole = async (id: string) => {
+    try {
+      dispatch(roleUser(id))
+      toast.success('successfully changed role')
+    } catch (error) {
+      toast.error('Error updating role')
+    }
+  }
   return (
     <div className="container">
       <AdminSidebar />
@@ -78,6 +86,16 @@ const UsersList = () => {
                             Delete
                           </button>
                         </div>
+                        <div className="flex justify-center">
+                          <button
+                            className="text-green-800 product-button show-more-button"
+                            onClick={() => {
+                              handleUserRole(user._id)
+                            }}>
+                            change role to Admin
+                          </button>
+                        </div>
+                        <br></br>
                       </article>
                     )
                   }

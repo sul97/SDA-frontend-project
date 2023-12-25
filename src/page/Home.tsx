@@ -11,14 +11,12 @@ import SortProduct from '../components/SortProduct'
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { items, pagination, isLoading, error, searchTerm } = useSelector(
-    (state: RootState) => state.productsReducer
-  )
+  const { items, pagination, searchTerm } = useSelector((state: RootState) => state.productsReducer)
   const { categories } = useSelector((state: RootState) => state.categoryReducer)
   const [selectCategory, setSelectCategory] = useState<string | ''>('')
 
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(3)
+  const [itemsPerPage, setItemsPerPage] = useState(2)
 
   useEffect(() => {
     dispatch(fetchData({ page: pagination.currentPage, limit: pagination.totalProducts }))

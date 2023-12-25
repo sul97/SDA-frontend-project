@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 
 export type User = {
   _id: string
-  name: string | undefined
+  name: string
   email: string
   password: string
   image: string
@@ -56,7 +56,10 @@ export const unbanUser = createAsyncThunk('users/unbanUser', async (id: string) 
   await axios.put<User[]>(`${API_BASE_URL}/users/unban/${id}`)
   return id
 })
-
+export const roleUser = createAsyncThunk('users/roleUser', async (id: string) => {
+  await axios.put<User[]>(`${API_BASE_URL}/users/role/${id}`)
+  return id
+})
 export const createUser = async (newUser: FormData) => {
   const response = await axios.post(`${API_BASE_URL}/users/process-register`, newUser)
   return response.data
@@ -122,6 +125,13 @@ export const usersReducer = createSlice({
       const foundUser = state.users.find((user) => user._id === action.payload)
       if (foundUser) {
         foundUser.isBanned = false
+      }
+    })
+    builder.addCase(roleUser.fulfilled, (state, action) => {
+      state.isLoading = false
+      const foundUser = state.users.find((user) => user._id === action.payload)
+      if (foundUser) {
+        foundUser.isAdmin = true
       }
     })
     builder.addCase(loginUser.fulfilled, (state, action) => {

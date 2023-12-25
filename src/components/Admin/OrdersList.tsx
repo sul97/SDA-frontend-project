@@ -9,9 +9,7 @@ import { toast } from 'react-toastify'
 
 const OrdersList = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { orders, isLoading, error } = useSelector((state: RootState) => state.orderReducer)
-  const { items } = useSelector((state: RootState) => state.productsReducer)
-  const { users } = useSelector((state: RootState) => state.usersReducer)
+  const { orders } = useSelector((state: RootState) => state.orderReducer)
 
   useEffect(() => {
     dispatch(fetchOrders())
