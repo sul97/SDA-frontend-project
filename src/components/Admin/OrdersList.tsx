@@ -34,6 +34,14 @@ const OrdersList = () => {
                         className="product-card"
                         style={{ display: 'grid', placeItems: 'center' }}>
                         <h2>{order.user.name}</h2>
+                        <h2>Products:</h2>
+                        {order.products.map((productOrder, index) => (
+                          <div key={productOrder._id}>
+                            <h3 className="product-description">
+                              {`${index + 1}. ${productOrder.title}`}
+                            </h3>
+                          </div>
+                        ))}
                         <h2>Amount :</h2>
                         <p>{order.payment.transaction.amount}</p>
                         <h2>Status:</h2>
