@@ -14,6 +14,7 @@ const OrdersList = () => {
   useEffect(() => {
     dispatch(fetchOrders())
   }, [dispatch])
+  console.log(orders)
   const handleDeleteProduct = (_id: string) => {
     dispatch(deleteOrder(_id))
     toast.success('Successful Delete Product')
@@ -33,17 +34,12 @@ const OrdersList = () => {
                         className="product-card"
                         style={{ display: 'grid', placeItems: 'center' }}>
                         <h2>{order.user.name}</h2>
-                        <h2>Products:</h2>
-                        {order.products.map((productOrder, index) => (
-                          <div key={productOrder._id}>
-                            <h3 className="product-description">
-                              {`${index + 1}. ${productOrder.product.title}`}
-                            </h3>
-                          </div>
-                        ))}
-                        <h2>Amount :{order.payment.amount}</h2>
-                        <h2>created At: </h2>
-                        <h3>{order.createdAt}</h3>
+                        <h2>Amount :</h2>
+                        <p>{order.payment.transaction.amount}</p>
+                        <h2>Status:</h2>
+                        <p>{order.status}</p>
+                        <h2>created At:</h2>
+                        <p>{order.createdAt}</p>
                       </div>
                       <div className="flex justify-center">
                         <button

@@ -29,7 +29,7 @@ const Payment = ({ cartItems, amount }: { cartItems: Product[]; amount: number }
   const handlePayment = async () => {
     const { nonce } = await instance.requestPaymentMethod()
     const response = await dispatch(payWithBraintree({ nonce, cartItems, amount }))
-    toast.success(response.payload.message)
+    console.log(response)
   }
 
   return (
@@ -40,7 +40,12 @@ const Payment = ({ cartItems, amount }: { cartItems: Product[]; amount: number }
           onInstance={(instance) => setInstance(instance)}
         />
       )}
-      <button onClick={handlePayment}>Make the Bayment</button>
+      <div className="flex justify-center">
+        <button className="text-green-800 product-button show-more-button" onClick={handlePayment}>
+          Make the Bayment
+        </button>
+      </div>
+      <br></br>
     </div>
   )
 }

@@ -69,15 +69,15 @@ const Cart = () => {
       </section>
       <div>
         {isLoggedIn ? (
-          <div>
+          <div className="flex justify-center">
             {cartItems.length > 0 ? (
               <Payment cartItems={cartItems} amount={cartTotal()} />
             ) : (
-              <p>Your cart is empty.</p>
+              <h1>Your cart is empty.</h1>
             )}
           </div>
         ) : (
-          <p>Please log in first</p>
+          <h1>Please log in first</h1>
         )}
       </div>
     </div>
