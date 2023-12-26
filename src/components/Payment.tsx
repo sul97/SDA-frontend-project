@@ -29,7 +29,7 @@ const Payment = ({ cartItems, amount }: { cartItems: Product[]; amount: number }
   const handlePayment = async () => {
     const { nonce } = await instance.requestPaymentMethod()
     const response = await dispatch(payWithBraintree({ nonce, cartItems, amount }))
-    console.log(response)
+    toast.success(response.payload.message)
   }
 
   return (

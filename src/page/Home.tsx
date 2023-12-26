@@ -102,13 +102,16 @@ const Home = () => {
       <section className="products">
         {currentItems.length > 0 &&
           currentItems.map((items) => {
-            const { _id, title, image, price } = items
+            const { _id, title, image, price, sold, quantity } = items
             return (
               <article key={_id} className="product">
                 <div className="product-card">
                   <img src={image} alt={title} />
                   <h1 className="product-title">{title}</h1>
                   <h2 className="product-description">{price} SAR</h2>
+                  <h2 className="product-description">
+                    In Stock: {quantity - sold > 0 ? quantity - sold : 'Out of stock'}
+                  </h2>
                   <button
                     className="product-button"
                     onClick={() => {
